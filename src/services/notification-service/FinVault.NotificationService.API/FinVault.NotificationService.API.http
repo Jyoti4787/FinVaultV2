@@ -1,0 +1,6 @@
+@FinVault.NotificationService.API_HostAddress = http://localhost:5157
+
+GET {{FinVault.NotificationService.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

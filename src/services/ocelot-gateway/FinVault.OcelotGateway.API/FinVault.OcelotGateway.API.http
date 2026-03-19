@@ -1,0 +1,6 @@
+@FinVault.OcelotGateway.API_HostAddress = http://localhost:5057
+
+GET {{FinVault.OcelotGateway.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
