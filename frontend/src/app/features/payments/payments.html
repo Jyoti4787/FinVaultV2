@@ -1,0 +1,90 @@
+<div class="page-header">
+  <div>
+    <h1>Payments Hub</h1>
+    <p class="subtitle">Securely transfer funds and review history.</p>
+  </div>
+</div>
+
+<div *ngIf="errorMessage" class="error-banner">
+  <span class="material-icons-outlined">error_outline</span> {{ errorMessage }}
+</div>
+<div *ngIf="successMessage" class="success-banner">
+  <span class="material-icons-outlined">check_circle</span> {{ successMessage }}
+</div>
+
+<div class="payments-container">
+  
+  <div class="send-panel glass-panel">
+    <h3>Send Money</h3>
+    
+    <ng-container *ngIf="!pendingTransactionId; else otpTemplate">
+      <form class="payment-form" (ngSubmit)="initiatePayment()">
+        <div class="form-group">
+          <label>Recipient Email or ID</label>
+          <input type="text" [(ngModel)]="paymentForm.recipientIdentifier" name="recipient" required />
+        </div>
+        
+        <div class="form-group">
+          <label>Amount</label>
+          <div class="amount-input-wrapper">
+            <span>$</span>
+            <input type="number" [(ngModel)]="paymentForm.amount" name="amount" required />
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn w-full mt-4" [disabled]="isInitiating">
+          {{ isInitiating ? 'Preparing...' : 'Initiate Transfer' }}
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-template #otpTemplate>
+      <div class="otp-verification">
+        <p class="text-sm">Please check your email for the 6-digit OTP code to authorize this <strong>${{ paymentForm.amount }}</strong> transfer.</p>
+        
+        <form (ngSubmit)="confirmPayment()">
+          <div class="form-group">
+            <label>Secure OTP</label>
+            <input type="text" [(ngModel)]="otpCode" name="otp" placeholder="123456" maxlength="6" required class="otp-input" />
+          </div>
+          <button type="submit" class="primary-btn w-full mt-4" [disabled]="isProcessing">
+            {{ isProcessing ? 'Verifying...' : 'Confirm Transfer' }}
+          </button>
+          <button type="button" class="secondary-btn w-full mt-2" (click)="pendingTransactionId = ''">Cancel</button>
+        </form>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="history-panel glass-panel">
+    <h3>Payment History</h3>
+    
+    <div class="loading-state" *ngIf="isLoading">
+      <span class="material-icons-outlined spin">refresh</span> Loading past payments...
+    </div>
+
+    <table class="data-table" *ngIf="!isLoading && payments.length > 0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Recipient</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of payments">
+          <td>{{ p.date | date:'shortDate' }}</td>
+          <td>{{ p.recipientEmail || p.recipientId }}</td>
+          <td class="amount font-medium">-${{ p.amount | number:'1.2-2' }}</td>
+          <td><span class="status-badge" [class.success]="p.status === 'Completed'">{{ p.status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoading && payments.length === 0">
+      <span class="material-icons-outlined">receipt_long</span>
+      <p>No payment history found.</p>
+    </div>
+  </div>
+</div>

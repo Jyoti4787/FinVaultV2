@@ -1,0 +1,52 @@
+<div class="page-header">
+  <div>
+    <h1>Rewards</h1>
+    <p class="subtitle">Turn your spending into cash back and exclusive perks.</p>
+  </div>
+</div>
+
+<div *ngIf="errorMessage" class="error-banner">
+  <span class="material-icons-outlined">error_outline</span> {{ errorMessage }}
+</div>
+<div *ngIf="successMessage" class="success-banner">
+  <span class="material-icons-outlined">check_circle</span> {{ successMessage }}
+</div>
+
+<div class="rewards-grid">
+  <div class="points-card glass-panel text-center">
+    <h3>Available Points</h3>
+    <div class="points-amount">{{ points | number }}</div>
+    <p class="points-value">Value: ${{ (points / 100) | number:'1.2-2' }}</p>
+    
+    <button class="primary-btn w-full mt-4 justify-center" (click)="redeem()" [disabled]="isRedeeming || isLoading">
+      <span class="material-icons-outlined">card_giftcard</span>
+      {{ isRedeeming ? 'Processing...' : 'Redeem 1000 Points' }}
+    </button>
+  </div>
+
+  <div class="history-panel glass-panel">
+    <h3>Redemption History</h3>
+    
+    <table class="data-table" *ngIf="!isLoading && history.length > 0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Reward</th>
+          <th class="text-right">Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let h of history">
+          <td>{{ h.date | date:'shortDate' }}</td>
+          <td>{{ h.description }}</td>
+          <td class="text-right text-danger">-{{ h.pointsUsed }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoading && history.length === 0">
+      <span class="material-icons-outlined">history</span>
+      <p>No past redemptions found.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,155 @@
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--primary-accent);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.transactions-container {
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  background-color: var(--surface);
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  width: 300px;
+}
+
+.search-wrap input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-left: 0.5rem;
+  outline: none;
+  width: 100%;
+}
+
+.search-wrap span {
+  color: var(--text-muted);
+}
+
+.secondary-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--borders);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Base Data Table Styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 1rem 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  border-bottom: 1px solid var(--borders);
+}
+
+.data-table td {
+  padding: 1.25rem 0.5rem;
+  border-bottom: 1px solid rgba(221, 214, 206, 0.4);
+}
+
+.data-table tr:hover td {
+  background-color: rgba(255,255,255,0.3);
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-medium {
+  font-weight: 600;
+}
+
+.amount {
+  font-family: monospace;
+  font-size: 1.05rem;
+}
+
+.amount.credit {
+  color: var(--success);
+}
+
+.type-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  background-color: var(--borders);
+  text-transform: capitalize;
+}
+
+.type-badge.credit {
+  background-color: rgba(61, 107, 53, 0.1);
+  color: var(--success);
+}
+
+.error-banner {
+  background-color: rgba(138, 59, 46, 0.1);
+  color: var(--danger);
+  padding: 0.75rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.loading-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  gap: 1rem;
+}
+
+.empty-state span {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,83 @@
+<div class="page-header">
+  <div>
+    <h1>Support Management</h1>
+    <p class="subtitle">Respond to and resolve user inquiries.</p>
+  </div>
+  <button class="secondary-btn" (click)="loadAdminTickets()">
+    <span class="material-icons-outlined">refresh</span> Refresh
+  </button>
+</div>
+
+<div *ngIf="errorMessage" class="error-banner">
+  <span class="material-icons-outlined">error_outline</span> {{ errorMessage }}
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+  <span class="material-icons-outlined spin">refresh</span> Loading tickets...
+</div>
+
+<div class="admin-table-container glass-panel" *ngIf="!isLoading">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Ticket ID</th>
+        <th>User ID</th>
+        <th>Subject</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of tickets">
+        <td class="id-col">#{{ t.id | slice:0:8 }}</td>
+        <td class="id-col">{{ t.userId | slice:0:8 }}...</td>
+        <td>{{ t.subject }}</td>
+        <td>
+          <span class="status-badge" [class.open]="t.status === 'Open'" [class.resolved]="t.status === 'Resolved'">
+            {{ t.status }}
+          </span>
+        </td>
+        <td>{{ t.createdAt | date:'short' }}</td>
+        <td>
+          <button class="primary-btn sm" 
+                  *ngIf="t.status !== 'Resolved'" 
+                  (click)="openResolveModal(t)">
+            Resolve
+          </button>
+          <span *ngIf="t.status === 'Resolved'" class="resolved-text">Resolved</span>
+        </td>
+      </tr>
+      <tr *ngIf="tickets.length === 0">
+        <td colspan="6" class="empty-state">No support tickets found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Resolve Modal -->
+<div class="modal-overlay" *ngIf="selectedTicket">
+  <div class="modal-content glass-panel">
+    <div class="modal-header">
+      <h2>Resolve Ticket #{{ selectedTicket.id | slice:0:8 }}</h2>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+    
+    <div class="ticket-details">
+      <p><strong>Subject:</strong> {{ selectedTicket.subject }}</p>
+      <p><strong>Message:</strong> {{ selectedTicket.message }}</p>
+    </div>
+
+    <div class="form-group">
+      <label>Resolution Comment</label>
+      <textarea [(ngModel)]="resolutionComment" placeholder="Enter notes for the user..." rows="4"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="secondary-btn" (click)="closeModal()">Cancel</button>
+      <button class="primary-btn" (click)="resolveTicket()" [disabled]="isSubmitting || !resolutionComment">
+        {{ isSubmitting ? 'Resolving...' : 'Confirm Resolution' }}
+      </button>
+    </div>
+  </div>
+</div>

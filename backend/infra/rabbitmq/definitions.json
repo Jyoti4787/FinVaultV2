@@ -1,0 +1,44 @@
+{
+  "rabbit_version": "3.13.0",
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "guest",
+      "hashing_algorithm": "rabbit_password_hashing_md5",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    { "name": "/" }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [],
+  "queues": [
+    { "name": "card-service.PaymentCompleted",               "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "card-service.PaymentCompleted_error",         "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "billing-service.PaymentCompleted",            "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "billing-service.PaymentCompleted_error",      "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "payment-service.PaymentRequested",            "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "payment-service.PaymentRequested_error",      "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "payment-service.Rollback",                    "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "payment-service.Rollback_error",              "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "payment-service.saga",                        "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "notification-service.CardAdded",              "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "notification-service.CardAdded_error",        "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "notification-service.PaymentCompleted",       "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "notification-service.StatementGenerated",     "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "notification-service.OtpRequested",           "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "notification-service.OtpRequested_error",     "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "audit-service.AllEvents",                     "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "audit-service.AllEvents_error",               "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} }
+  ],
+  "bindings": []
+}

@@ -1,0 +1,65 @@
+<div class="page-header">
+  <div>
+    <h1>Admin Panel: Card Dashboard</h1>
+    <p class="subtitle">Review and approve all user cards in the FinVault Eco-system.</p>
+  </div>
+  <button class="secondary-btn" (click)="loadAdminCards()">
+    <span class="material-icons-outlined">refresh</span> Refresh
+  </button>
+</div>
+
+<div *ngIf="errorMessage" class="error-banner">
+  <span class="material-icons-outlined">error_outline</span>
+  {{ errorMessage }}
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+  <span class="material-icons-outlined spin">refresh</span> Loading network cards...
+</div>
+
+<div class="admin-table-container glass-panel" *ngIf="!isLoading">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Card ID</th>
+        <th>Cardholder Name</th>
+        <th>Provider</th>
+        <th>Network</th>
+        <th>Limit</th>
+        <th>Balance</th>
+        <th>Billing Cycle</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let card of cards">
+        <td class="id-col">{{ card.cardId.split('-')[0] }}...</td>
+        <td>{{ card.cardholderName || 'N/A' }}</td>
+        <td>{{ card.issuerName || 'FinVault Standard' }}</td>
+        <td style="font-weight: bold; color: var(--primary-accent);">{{ card.network || 'Visa' }}</td>
+        <td>${{ card.creditLimit | number:'1.2-2' }}</td>
+        <td style="color: var(--danger);">${{ card.outstandingBalance | number:'1.2-2' }}</td>
+        <td>Day {{ card.billingCycleStartDay }}</td>
+        <td>{{ card.dueDate | date:'mediumDate' }}</td>
+        <td>
+          <span class="status-badge" [class.active]="card.isVerified" [class.pending]="!card.isVerified">
+            {{ card.isVerified ? 'VERIFIED' : 'PENDING' }}
+          </span>
+        </td>
+        <td>
+          <button 
+            class="primary-btn sm" 
+            [disabled]="card.isVerified" 
+            (click)="approveCard(card.cardId)">
+            {{ card.isVerified ? 'Approved' : 'Approve' }}
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="cards.length === 0">
+        <td colspan="10" class="empty-state">No cards currently exist in the network.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

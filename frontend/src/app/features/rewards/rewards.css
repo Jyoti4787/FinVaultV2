@@ -1,0 +1,126 @@
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--primary-accent);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+}
+
+.points-card {
+  padding: 2.5rem 1.5rem;
+  border-radius: 12px;
+  height: fit-content;
+}
+
+.points-card h3, .history-panel h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.points-amount {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--primary-accent);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.points-value {
+  color: var(--success);
+  font-weight: 500;
+  font-size: 1.125rem;
+}
+
+.text-center { text-align: center; }
+.justify-center { justify-content: center; }
+
+.history-panel {
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.primary-btn {
+  display: flex;
+  align-items: center;
+  background-color: var(--primary-accent);
+  color: var(--surface);
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  gap: 0.5rem;
+}
+
+.primary-btn:hover:not([disabled]) {
+  background-color: #1a1714;
+}
+
+.primary-btn[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.w-full { width: 100%; }
+.mt-4 { margin-top: 1.5rem; }
+
+/* Base Data Table Styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 1rem 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  border-bottom: 1px solid var(--borders);
+}
+
+.data-table td {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid rgba(221, 214, 206, 0.4);
+}
+
+.text-right { text-align: right; }
+.text-danger { color: var(--danger); font-weight: 600; }
+
+.error-banner, .success-banner {
+  padding: 0.75rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.error-banner { background-color: rgba(138, 59, 46, 0.1); color: var(--danger); }
+.success-banner { background-color: rgba(61, 107, 53, 0.1); color: var(--success); }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  gap: 1rem;
+}
+.empty-state span { font-size: 3rem; opacity: 0.5; }

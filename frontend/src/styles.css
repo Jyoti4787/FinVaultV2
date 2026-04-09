@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+
+/* Global variables based on design system rules */
+:root {
+  --background: #f7f5f2;
+  --surface: #ffffff;
+  --primary-accent: #2f2a24;
+  --secondary-accent: #7a6f63;
+  --success: #3d6b35;
+  --warning: #b7791f;
+  --danger: #8a3b2e;
+  --borders: #ddd6ce;
+  --text-main: #2f2a24;
+  --text-muted: #7a6f63;
+  --transition-fast: 0.15s ease-out;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Strict enforcement: No gradients/blues */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--text-main);
+  background-image: none !important; 
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(47, 42, 36, 0.05);
+}
+
+a {
+  color: var(--primary-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--secondary-accent);
+}
+
+/* Base button styling */
+button {
+  background-color: var(--primary-accent);
+  color: var(--surface);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  /* Specific instruction: NO GRADIENTS */
+  background-image: none !important;
+}
+
+button:hover {
+  background-color: var(--secondary-accent);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button.success { background-color: var(--success); }
+button.warning { background-color: var(--warning); }
+button.danger { background-color: var(--danger); }
+
+/* Layout classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--borders);
+  border-radius: 4px;
+  font-family: inherit;
+  color: var(--text-main);
+  background-color: var(--surface);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 2px rgba(47, 42, 36, 0.2);
+}

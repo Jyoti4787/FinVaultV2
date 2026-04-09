@@ -1,0 +1,88 @@
+<div class="dashboard-header" *ngIf="!isLoading; else loader">
+  <div>
+    <h1>Welcome back, {{ userName }}</h1>
+    <p class="subtitle">Here is what's happening with your accounts today.</p>
+  </div>
+</div>
+
+<ng-template #loader>
+  <div class="dashboard-header" style="opacity: 0.5;">
+    <h1>Loading...</h1>
+    <p class="subtitle">Fetching your latest data securely.</p>
+  </div>
+</ng-template>
+
+<div class="dashboard-grid">
+  <!-- Balance Card -->
+  <div class="card balance-card">
+    <div class="card-title">Total Balance</div>
+    <div class="balance-amount">${{ totalBalance | number:'1.2-2' }}</div>
+    <div class="balance-meta"><span class="material-icons-outlined trend-up">trending_up</span> +3.2% from last month</div>
+    
+    <div class="quick-actions">
+      <button class="action-btn"><span class="material-icons-outlined">send</span> Send</button>
+      <button class="action-btn"><span class="material-icons-outlined">add_circle_outline</span> Deposit</button>
+      <button class="action-btn secondary"><span class="material-icons-outlined">more_horiz</span> More</button>
+    </div>
+  </div>
+
+  <!-- Chart Card -->
+  <div class="card chart-card">
+    <div class="card-header">
+      <div class="card-title">Spending History</div>
+      <select class="minimal-select">
+        <option>Last 6 months</option>
+        <option>This year</option>
+      </select>
+    </div>
+    <div class="chart-container">
+      <canvas baseChart
+        [data]="barChartData"
+        [options]="barChartOptions"
+        [plugins]="barChartPlugins"
+        [legend]="barChartLegend"
+        type="bar">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Transactions Card -->
+  <div class="card transactions-card">
+    <div class="card-header">
+      <div class="card-title">Recent Transactions</div>
+      <a routerLink="/transactions" class="view-all">View All</a>
+    </div>
+    
+    <div class="transactions-list">
+      @for (tx of recentTransactions; track tx.id) {
+        <div class="transaction-item">
+          <div class="tx-icon" [class.credit]="tx.type === 'credit'">
+            <span class="material-icons-outlined">
+              {{ tx.type === 'credit' ? 'arrow_downward' : 'shopping_bag' }}
+            </span>
+          </div>
+          <div class="tx-details">
+            <div class="tx-merchant">{{ tx.description || tx.category }}</div>
+            <div class="tx-date">{{ tx.timestamp | date:'MMM dd' }}</div>
+          </div>
+          <div class="tx-amount" [class.credit]="tx.type === 'credit'">
+            {{ tx.type === 'credit' ? '+' : '-' }}${{ tx.amount | number:'1.2-2' }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  
+  <!-- Mini Cards -->
+  <div class="card mini-card">
+    <div class="card-title">Active Cards</div>
+    <div class="mini-stat">{{ totalCards }}</div>
+    <a routerLink="/cards" class="view-all">Manage Cards</a>
+  </div>
+  
+  <div class="card mini-card">
+    <div class="card-title">Pending Payments</div>
+    <div class="mini-stat warning-text">1</div>
+    <a href="#" class="view-all">Review</a>
+  </div>
+</div>

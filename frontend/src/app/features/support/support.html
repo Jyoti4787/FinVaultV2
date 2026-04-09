@@ -1,0 +1,64 @@
+<div class="page-header">
+  <div>
+    <h1>Support Center</h1>
+    <p class="subtitle">Need help? Open a ticket to reach our 24/7 support team.</p>
+  </div>
+</div>
+
+<div *ngIf="errorMessage" class="error-banner">
+  <span class="material-icons-outlined">error_outline</span> {{ errorMessage }}
+</div>
+<div *ngIf="successMessage" class="success-banner">
+  <span class="material-icons-outlined">check_circle</span> {{ successMessage }}
+</div>
+
+<div class="support-container">
+  <div class="form-panel glass-panel">
+    <h3>Open New Ticket</h3>
+    
+    <form (ngSubmit)="submitTicket()">
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" [(ngModel)]="ticketForm.subject" name="subject" required placeholder="Brief description of the issue" />
+      </div>
+      
+      <div class="form-group">
+        <label>Message</label>
+        <textarea [(ngModel)]="ticketForm.message" name="message" required rows="5" placeholder="Please provide all relevant details here..."></textarea>
+      </div>
+
+      <button type="submit" class="primary-btn w-full mt-4" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Submitting...' : 'Submit Ticket' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="history-panel glass-panel">
+    <h3>Your Open Tickets</h3>
+    
+    <div class="loading-state" *ngIf="isLoading">
+      <span class="material-icons-outlined spin">refresh</span> Loading tickets...
+    </div>
+
+    <div class="ticket-list" *ngIf="!isLoading && tickets.length > 0">
+      <div class="ticket-item" *ngFor="let t of tickets">
+        <div class="ticket-header">
+          <span class="ticket-id">#{{ t.id | slice:0:8 }}</span>
+          <span class="status-badge" [class.open]="t.status === 'Open'" [class.resolved]="t.status === 'Resolved'">{{ t.status }}</span>
+        </div>
+        <div class="ticket-subject">{{ t.subject }}</div>
+        <div class="ticket-message">{{ t.message }}</div>
+        <div class="admin-comment" *ngIf="t.adminComment">
+          <strong>Admin Response:</strong>
+          <p>{{ t.adminComment }}</p>
+        </div>
+        <div class="ticket-date">{{ t.createdAt | date:'medium' }}</div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && tickets.length === 0">
+      <span class="material-icons-outlined">support_agent</span>
+      <p>You have no active support tickets.</p>
+    </div>
+  </div>
+</div>

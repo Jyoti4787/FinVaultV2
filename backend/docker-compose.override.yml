@@ -1,0 +1,21 @@
+# Development overrides — enables Swagger UI on all services and relaxes health checks
+services:
+  identity-service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  card-service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  payment-service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  notification-service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  ocelot-gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

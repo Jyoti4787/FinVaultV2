@@ -1,0 +1,221 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/identity-swagger/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/identity/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/identity/auth/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/identity/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/identity/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "card-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/card-swagger/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "cards"
+    },
+    {
+      "DownstreamPathTemplate": "/api/cards",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "card-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/cards",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "cards"
+    },
+    {
+      "DownstreamPathTemplate": "/api/cards/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "card-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/cards/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "cards"
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/payment-swagger/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/api/payments/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/payments/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/api/transactions",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/transactions",
+      "UpstreamHttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/api/transactions/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/transactions/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/api/external-bills/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/external-bills/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/api/billing/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/billing/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "notification-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/notification-swagger/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "notifications"
+    },
+    {
+      "DownstreamPathTemplate": "/api/notifications/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "notification-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/notifications/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "notifications"
+    },
+    {
+      "DownstreamPathTemplate": "/api/rewards/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "notification-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/rewards/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "notifications"
+    },
+    {
+      "DownstreamPathTemplate": "/api/support/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "notification-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/support/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "notifications"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "identity",
+      "Config": [
+        {
+          "Name": "Identity Service",
+          "Version": "v1",
+          "Url": "http://identity-service:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "cards",
+      "Config": [
+        {
+          "Name": "Card Service",
+          "Version": "v1",
+          "Url": "http://card-service:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "payments",
+      "Config": [
+        {
+          "Name": "Payment Service",
+          "Version": "v1",
+          "Url": "http://payment-service:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "notifications",
+      "Config": [
+        {
+          "Name": "Notification Service",
+          "Version": "v1",
+          "Url": "http://notification-service:8080/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5001"
+  }
+}

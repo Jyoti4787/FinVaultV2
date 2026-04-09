@@ -1,0 +1,59 @@
+@FinVault.CardService.API_HostAddress = http://localhost:5121
+@ContentType = application/json
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC1kYWQzLTQwY2EtYWQxMi1kZjZmZmM3YWRjNzYzIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.JfnTWX_7p9JlgYnnfDPkWoAYEfhEBJVJKd97D9Fkp5E
+
+### Get all cards for user
+GET {{FinVault.CardService.API_HostAddress}}/api/cards
+Authorization: Bearer {{token}}
+Accept: {{ContentType}}
+
+### Get card by ID
+GET {{FinVault.CardService.API_HostAddress}}/api/cards/12345678-dae3-40ca-ad12-df6ffc7adce7
+Authorization: Bearer {{token}}
+Accept: {{ContentType}}
+
+### Add new card
+POST {{FinVault.CardService.API_HostAddress}}/api/cards
+Authorization: Bearer {{token}}
+Content-Type: {{ContentType}}
+
+{
+  "cardNumber": "4532015112830366",
+  "cardholderName": "John Doe",
+  "expiryMonth": 12,
+  "expiryYear": 2025,
+  "creditLimit": 100000,
+  "billingCycleStartDay": 15
+}
+
+### Update card limit
+PATCH {{FinVault.CardService.API_HostAddress}}/api/cards/12345678-dae3-40ca-ad12-df6ffc7adce7/limit
+Authorization: Bearer {{token}}
+Content-Type: {{ContentType}}
+
+{
+  "newLimit": 150000
+}
+
+### Set as default card
+PATCH {{FinVault.CardService.API_HostAddress}}/api/cards/12345678-dae3-40ca-ad12-df6ffc7adce7/default
+Authorization: Bearer {{token}}
+Accept: {{ContentType}}
+
+### Verify card
+POST {{FinVault.CardService.API_HostAddress}}/api/cards/12345678-dae3-40ca-ad12-df6ffc7adce7/verify
+Authorization: Bearer {{token}}
+Content-Type: {{ContentType}}
+
+{
+  "verificationCode": "123456"
+}
+
+### Delete card
+DELETE {{FinVault.CardService.API_HostAddress}}/api/cards/12345678-dae3-40ca-ad12-df6ffc7adce7
+Authorization: Bearer {{token}}
+Accept: {{ContentType}}
+
+### Health check
+GET {{FinVault.CardService.API_HostAddress}}/health
+Accept: {{ContentType}}

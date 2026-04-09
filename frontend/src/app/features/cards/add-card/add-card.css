@@ -1,0 +1,68 @@
+.add-card-container {
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.select-input, input[type="number"] {
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.select-input option {
+  background-color: var(--surface);
+  color: var(--text-main);
+}
+
+.select-input:focus, input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+}
+
+.info-block {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(228, 182, 107, 0.05);
+  border-left: 4px solid var(--primary-accent);
+  border-radius: 4px;
+  align-items: center;
+}
+
+.info-icon {
+  color: var(--primary-accent);
+  flex-shrink: 0;
+}
+
+.info-block p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-2 { margin-bottom: 1rem; }

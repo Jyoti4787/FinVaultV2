@@ -1,0 +1,63 @@
+### Test Authentication through Ocelot Gateway
+### Base URLs
+@gatewayUrl = http://localhost:5001
+@identityUrl = http://localhost:5232
+
+###############################################################################
+# Step 1: Login and Get Token
+###############################################################################
+
+### Login to get JWT token
+# @name login
+POST {{identityUrl}}/api/identity/auth/login
+Content-Type: application/json
+
+{
+  "email": "directuser@example.com",
+  "password": "SecurePass123",
+  "correlationId": "00000000-0000-0000-0000-000000000000"
+}
+
+###
+
+### Extract token from login response
+@accessToken = {{login.response.body.$.data.accessToken}}
+
+###############################################################################
+# Step 2: Test Direct Access (Port 5232)
+###############################################################################
+
+### Get Profile - Direct to Identity Service (Should Work)
+GET {{identityUrl}}/api/identity/users/profile
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Get Profile using /me alias - Direct to Identity Service
+GET {{identityUrl}}/api/identity/users/me
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Step 3: Test Through Gateway (Port 5001)
+###############################################################################
+
+### Get Profile - Through Ocelot Gateway
+GET {{gatewayUrl}}/api/identity/users/profile
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Get Profile using /me alias - Through Ocelot Gateway
+GET {{gatewayUrl}}/api/identity/users/me
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# NOTES
+###############################################################################
+# 
+# If direct access (5232) works but gateway (5001) doesn't:
+# - Check Ocelot logs: docker logs finvault-gateway --tail 50
+# - Verify JWT secret matches in gateway and identity service
+# - Ensure AuthenticationOptions is set in ocelot.json
+#
+###############################################################################

@@ -1,0 +1,111 @@
+╔══════════════════════════════════════════════════════════════╗
+║         FinVault 4-Service Backend - Quick Reference         ║
+╚══════════════════════════════════════════════════════════════╝
+
+📦 SERVICES (4 Core + Gateway)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. identity-service      Port 5232  (Auth + Users)
+  2. card-service          Port 5121  (Cards)
+  3. payment-service       Port 5181  (Payments + Transactions)
+  4. notification-service  Port 5191  (Notifications + Rewards)
+  5. ocelot-gateway        Port 5001  (API Gateway)
+
+🚀 QUICK START
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  First time:        ./deploy-4-services.sh
+  Start services:    ./start-services.sh
+  Stop services:     ./stop-services.sh
+  Restart:           ./restart-services.sh
+  Check status:      ./status.sh
+  View logs:         ./logs.sh
+
+🔨 DEVELOPMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Rebuild all:       ./rebuild.sh
+  Rebuild one:       ./rebuild.sh identity-service
+  View logs:         ./logs.sh payment-service
+  Clean all:         ./clean.sh
+
+🌐 ACCESS URLS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Gateway:           http://localhost:5001/swagger
+  Identity:          http://localhost:5232/swagger
+  Cards:             http://localhost:5121/swagger
+  Payments:          http://localhost:5181/swagger
+  Notifications:     http://localhost:5191/swagger
+  RabbitMQ:          http://localhost:15672 (guest/guest)
+
+📊 MONITORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Status:            ./status.sh
+  All logs:          ./logs.sh
+  Service logs:      ./logs.sh identity-service
+  Docker stats:      docker stats
+  Container list:    docker ps
+
+🐛 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Check status:   ./status.sh
+  2. View logs:      ./logs.sh
+  3. Restart:        ./restart-services.sh
+  4. Clean rebuild:  ./clean.sh && ./deploy-4-services.sh
+
+💾 DOCKER COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  List containers:   docker-compose ps
+  Stop service:      docker-compose stop identity-service
+  Start service:     docker-compose start identity-service
+  Remove volumes:    docker-compose down -v
+  Prune system:      docker system prune -a
+
+📝 COMMON WORKFLOWS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  First Setup:
+    cd backend
+    ./deploy-4-services.sh
+
+  Daily Dev:
+    ./start-services.sh
+    # make changes
+    ./rebuild.sh payment-service
+    ./logs.sh payment-service
+
+  After Code Changes:
+    ./rebuild.sh service-name
+    # or
+    ./deploy-4-services.sh
+
+  Before Committing:
+    ./status.sh
+    # ensure all green
+
+  End of Day:
+    ./stop-services.sh
+
+📚 DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Scripts Guide:     SCRIPTS_GUIDE.md
+  Deployment:        DEPLOYMENT_COMPLETE.md
+  Endpoints:         CONSOLIDATED_ENDPOINTS.md
+  Architecture:      4_SERVICES_FINAL.md
+
+✅ HEALTH CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  All services should show:
+    ✓ Gateway is responding
+    ✓ Identity Service is responding
+    ✓ Card Service is responding
+    ✓ Payment Service is responding
+    ✓ Notification Service is responding
+
+🎯 ENDPOINTS (44 Total)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Identity:          11 endpoints
+  Card:              10 endpoints
+  Payment:           13 endpoints
+  Notification:       8 endpoints
+  Gateway:            2 endpoints
+
+═══════════════════════════════════════════════════════════════
+For detailed help: cat SCRIPTS_GUIDE.md
+═══════════════════════════════════════════════════════════════

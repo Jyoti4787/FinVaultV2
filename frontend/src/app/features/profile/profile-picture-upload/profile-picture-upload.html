@@ -1,0 +1,47 @@
+<div class="page-header">
+  <div>
+    <h1>Update Profile Picture</h1>
+    <p class="subtitle">Upload a new photo. Supported formats: JPG, PNG, GIF (max 5MB).</p>
+  </div>
+</div>
+
+<div class="upload-container glass-panel">
+  <div *ngIf="errorMessage" class="error-banner mb-2">
+    <span class="material-icons-outlined">error_outline</span> {{ errorMessage }}
+  </div>
+  <div *ngIf="successMessage" class="success-banner mb-2">
+    <span class="material-icons-outlined">check_circle</span> {{ successMessage }}
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-area" *ngIf="preview">
+    <img [src]="preview" alt="Preview" class="preview-img" />
+    <p class="file-name">{{ selectedFile?.name }}</p>
+  </div>
+
+  <!-- Drop Zone -->
+  <div
+    class="drop-zone"
+    [class.dragging]="isDragging"
+    *ngIf="!preview"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+    (click)="fileInput.click()">
+    <span class="material-icons-outlined drop-icon">cloud_upload</span>
+    <p>Drag & drop your image here, or <strong>click to browse</strong></p>
+    <p class="hint">JPG, PNG, GIF — max 5MB</p>
+  </div>
+  <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display:none" />
+
+  <div class="upload-actions">
+    <button class="secondary-btn" (click)="cancel()">Cancel</button>
+    <button class="secondary-btn" *ngIf="preview" (click)="preview = null; selectedFile = null">
+      <span class="material-icons-outlined">refresh</span> Choose Different
+    </button>
+    <button class="primary-btn" [disabled]="!selectedFile || isUploading" (click)="upload()">
+      <span class="material-icons-outlined spin" *ngIf="isUploading">refresh</span>
+      {{ isUploading ? 'Uploading...' : 'Upload Photo' }}
+    </button>
+  </div>
+</div>

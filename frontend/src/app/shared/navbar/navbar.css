@@ -1,0 +1,108 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem 1rem;
+}
+
+.sidebar-header {
+  margin-bottom: 2.5rem;
+  padding: 0 0.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--primary-accent);
+}
+
+.brand-icon {
+  font-size: 2rem;
+  color: var(--primary-accent);
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--borders);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.menu-item:hover {
+  background-color: rgba(47, 42, 36, 0.05); /* very light primary accent */
+  color: var(--primary-accent);
+}
+
+.menu-item.active {
+  background-color: var(--primary-accent);
+  color: var(--surface);
+}
+
+.logout-item {
+  color: var(--danger);
+}
+
+.logout-item:hover {
+  background-color: rgba(138, 59, 46, 0.08); /* danger with opacity */
+  color: var(--danger);
+}
+
+.menu-item span.material-icons-outlined {
+  font-size: 1.25rem;
+}
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 2px 8px;
+  background: rgba(234, 67, 53, 0.12);
+  color: #ea4335;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.sidebar-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 1rem 1rem 0.4rem;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

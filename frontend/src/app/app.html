@@ -1,0 +1,22 @@
+<div class="app-container">
+  <aside class="sidebar-wrapper">
+    <app-navbar></app-navbar>
+  </aside>
+  
+  <main class="main-content">
+    <header class="top-header glass-panel">
+      <div class="header-search">
+        <span class="material-icons-outlined">search</span>
+        <input type="text" placeholder="Search transactions, cards..." />
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn"><span class="material-icons-outlined">notifications</span></button>
+        <div class="user-avatar">JS</div>
+      </div>
+    </header>
+    
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

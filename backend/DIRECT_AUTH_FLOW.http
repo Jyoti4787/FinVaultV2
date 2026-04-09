@@ -1,0 +1,88 @@
+### FinVault Identity Service - Direct Auth Flow (OTP Disabled)
+### Base URL
+@baseUrl = http://localhost:5232/api/identity/auth
+
+###############################################################################
+# DIRECT REGISTRATION & LOGIN (No OTP Required)
+###############################################################################
+
+### Step 1: Register User - Creates account directly (no OTP)
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "SecurePass123",
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": {
+#     "message": "Registration successful! User created with ID: <guid>"
+#   }
+# }
+
+###
+
+### Step 2: Login - Returns JWT tokens directly (no OTP)
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "SecurePass123",
+  "correlationId": "00000000-0000-0000-0000-000000000000"
+}
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": {
+#     "message": "Login successful! OTP verification skipped in development mode.",
+#     "userId": "<guid>",
+#     "email": "testuser@example.com",
+#     "role": "User",
+#     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#     "refreshToken": "random-base64-string"
+#   }
+# }
+
+###
+
+### Step 3: Use Access Token to call protected endpoints
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+GET http://localhost:5232/api/identity/profile
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Step 4: Refresh Token - Get new access token
+POST {{baseUrl}}/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "your-refresh-token-here",
+  "correlationId": "00000000-0000-0000-0000-000000000000"
+}
+
+###############################################################################
+# NOTES
+###############################################################################
+# 
+# ✅ OTP verification is DISABLED for development
+# ✅ Registration creates user account immediately
+# ✅ Login returns JWT tokens directly
+# ✅ Access token expires in 15 minutes (configurable in appsettings.json)
+# ✅ Refresh token expires in 7 days
+# 
+# To RE-ENABLE OTP:
+# 1. Uncomment the OTP code in InitiateRegistrationCommandHandler.cs
+# 2. Uncomment the OTP code in LoginUserCommandHandler.cs
+# 3. Remove the JWT generation code from AuthController.cs Login method
+# 4. Rebuild and restart identity-service
+#
+###############################################################################

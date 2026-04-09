@@ -1,0 +1,80 @@
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo" routerLink="/" style="cursor: pointer;">
+      <span class="material-icons-outlined brand-icon">account_balance</span>
+      <h2>FinVault</h2>
+    </div>
+    <!-- Admin Badge -->
+    <span *ngIf="isAdmin" class="admin-badge">
+      <span class="material-icons-outlined" style="font-size:14px;">shield</span> ADMIN
+    </span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  ADMIN SIDEBAR — only visible to Admins    -->
+  <!-- ═══════════════════════════════════════════ -->
+  <ng-container *ngIf="isAdmin">
+    <div class="sidebar-section-label">Administration</div>
+    <div class="sidebar-menu">
+      <a routerLink="/admin/cards" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">fact_check</span>
+        <span>Card Approvals</span>
+      </a>
+      <a routerLink="/admin/support" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">support_agent</span>
+        <span>Support Center</span>
+      </a>
+      <a routerLink="/admin/users" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">people_alt</span>
+        <span>User Control</span>
+      </a>
+      <a routerLink="/admin/transactions" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">receipt_long</span>
+        <span>Global Ledger</span>
+      </a>
+    </div>
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  USER SIDEBAR — only visible to regular users -->
+  <!-- ═══════════════════════════════════════════ -->
+  <ng-container *ngIf="!isAdmin">
+    <div class="sidebar-menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/cards" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">credit_card</span>
+        <span>Cards</span>
+      </a>
+      <a routerLink="/payments" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">sync_alt</span>
+        <span>Payments</span>
+      </a>
+      <a routerLink="/transactions" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">receipt_long</span>
+        <span>Transactions</span>
+      </a>
+      <a routerLink="/rewards" routerLinkActive="active" class="menu-item">
+        <span class="material-icons-outlined">card_giftcard</span>
+        <span>Rewards</span>
+      </a>
+    </div>
+  </ng-container>
+
+  <div class="sidebar-footer">
+    <a *ngIf="!isAdmin" routerLink="/support" routerLinkActive="active" class="menu-item">
+      <span class="material-icons-outlined">support_agent</span>
+      <span>Support</span>
+    </a>
+    <a *ngIf="!isAdmin" routerLink="/profile" routerLinkActive="active" class="menu-item">
+      <span class="material-icons-outlined">person_outline</span>
+      <span>Profile</span>
+    </a>
+    <a (click)="logout()" class="menu-item logout-item" style="cursor: pointer;">
+      <span class="material-icons-outlined">logout</span>
+      <span>Logout</span>
+    </a>
+  </div>
+</nav>

@@ -1,0 +1,165 @@
+<div class="page-header">
+  <div>
+    <h1>Your Cards</h1>
+    <p class="subtitle">Manage your payment methods and limits.</p>
+  </div>
+  <button class="primary-btn" (click)="toggleAddForm()">
+    <span class="material-icons-outlined">add</span> Add Card
+  </button>
+</div>
+
+<div *ngIf="errorMessage" class="error-banner">
+  <span class="material-icons-outlined">error_outline</span>
+  {{ errorMessage }}
+</div>
+
+<div class="add-card-panel glass-panel" *ngIf="showAddForm">
+  <h3>Add New Card</h3>
+  <p class="form-hint">Enter your real card details. CVV is never stored.</p>
+  <form class="add-card-form" (ngSubmit)="addCard()">
+
+    <!-- Row 1: Full Card Number -->
+    <div class="form-group full-width">
+      <div class="label-with-badge">
+        <label>Card Number <span class="required">*</span></label>
+        <span class="network-badge" *ngIf="detectedNetwork !== 'Unknown'">
+          {{ detectedNetwork }}
+        </span>
+      </div>
+      <input 
+        type="text" 
+        [(ngModel)]="newCard.cardNumber" 
+        name="cardNumber" 
+        placeholder="1234 5678 9012 3456"
+        maxlength="19"
+        required />
+      <span class="field-hint">16-digit card number (spaces optional)</span>
+    </div>
+
+    <!-- Row 2: Name on Card -->
+    <div class="form-group full-width">
+      <label>Name on Card <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="newCard.cardholderName" name="name" placeholder="JOHN DOE" required />
+    </div>
+
+    <!-- Row 3: Expiry + CVV -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Expiry Month <span class="required">*</span></label>
+        <select [(ngModel)]="newCard.expiryMonth" name="expiryMonth">
+          <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m | number:'2.0' }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Expiry Year <span class="required">*</span></label>
+        <select [(ngModel)]="newCard.expiryYear" name="expiryYear">
+          <option *ngFor="let y of expiryYears" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>CVV <span class="required">*</span></label>
+        <input 
+          type="password" 
+          [(ngModel)]="newCard.cvv" 
+          name="cvv" 
+          placeholder="•••"
+          maxlength="4"
+          required />
+        <span class="field-hint">3-4 digits, never stored</span>
+      </div>
+    </div>
+
+    <!-- Row 4: Card Type + Credit Limit -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Card Type</label>
+        <select [(ngModel)]="newCard.cardType" name="type">
+          <option value="Credit">Credit</option>
+          <option value="Debit">Debit</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Credit Limit (₹)</label>
+        <input type="number" [(ngModel)]="newCard.creditLimit" name="limit" min="1000" />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="secondary-btn" (click)="toggleAddForm()">Cancel</button>
+      <button type="submit" class="primary-btn" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Processing...' : 'Submit Request' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+  <span class="material-icons-outlined spin">refresh</span> Fetching cards...
+</div>
+
+<div class="cards-grid" *ngIf="!isLoading">
+  <div class="card-item" *ngFor="let card of cards" 
+       [class.verified]="card.isVerified"
+       [class.visa]="card.network?.toLowerCase() === 'visa' || (card.issuerName?.toLowerCase()?.includes('visa'))"
+       [class.mastercard]="card.network?.toLowerCase() === 'mastercard' || (card.issuerName?.toLowerCase()?.includes('mastercard'))"
+       [class.rupay]="card.network?.toLowerCase() === 'rupay' || (card.issuerName?.toLowerCase()?.includes('rupay'))"
+       [class.amex]="card.network?.toLowerCase() === 'amex' || (card.issuerName?.toLowerCase()?.includes('amex'))">
+    <!-- Card Glare Effect -->
+    <div class="card-glare"></div>
+    
+    <div class="card-item-header">
+      <div class="chip-container">
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+      </div>
+      
+      <!-- Top Actions (Delete) -->
+      <div class="card-actions-top">
+        <button class="action-btn-sm delete" (click)="removeCard(card.cardId)" title="Delete Card">
+          <span class="material-icons-outlined">delete</span>
+        </button>
+      </div>
+
+      <div class="card-brand">
+        <span class="brand-text">{{ card.network || card.issuerName || 'VISA' }}</span>
+        <span class="material-icons-outlined brand-icon" *ngIf="card.network === 'Visa'">payments</span>
+        <span class="material-icons-outlined brand-icon" *ngIf="card.network !== 'Visa'">credit_card</span>
+      </div>
+    </div>
+
+    <div class="card-number-wrapper">
+      <div class="card-number">
+        <span>****</span>
+        <span>****</span>
+        <span>****</span>
+        <span class="last-digits">{{ card.maskedNumber || '1234' }}</span>
+      </div>
+    </div>
+
+    <div class="card-financials">
+      <div class="financial-item">
+        <div class="fin-label">LIMIT / BALANCE</div>
+        <div class="fin-value">₹{{ card.creditLimit | number:'1.0-0' }} / ₹{{ card.outstandingBalance | number:'1.0-0' }}</div>
+      </div>
+      <div class="financial-item">
+        <div class="fin-label">CYCLE / DUE DATE</div>
+        <div class="fin-value">Day {{ card.billingCycleStartDay }} / {{ card.dueDate ? (card.dueDate | date:'MMM dd') : 'N/A' }}</div>
+      </div>
+    </div>
+
+    <div class="card-item-footer">
+      <div class="footer-left">
+        <div class="holder-label">CARD HOLDER</div>
+        <div class="card-holder">{{ card.cardholderName || 'FINVAULT USER' }}</div>
+      </div>
+      <div class="footer-right">
+        <div class="expiry-label">EXPIRES</div>
+        <div class="card-expiry">{{ card.expiryMonth | number:'2.0' }}/{{ card.expiryYear.toString().slice(-2) }}</div>
+      </div>
+    </div>
+
+    <div class="card-status-indicator" [class.active]="card.isVerified"></div>
+  </div>
+</div>

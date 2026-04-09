@@ -1,0 +1,34 @@
+<div class="page-header">
+  <div>
+    <h1>Notifications</h1>
+    <p class="subtitle">Stay updated on your account activity and security alerts.</p>
+  </div>
+</div>
+
+<div class="notifications-container glass-panel">
+  <div *ngIf="isLoading" class="loading-state">
+    <span class="material-icons-outlined spin">refresh</span> Loading notifications...
+  </div>
+  
+  <div *ngIf="errorMessage" class="error-banner">
+    <span class="material-icons-outlined">error_outline</span> {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && notifications.length === 0" class="empty-state">
+    <span class="material-icons-outlined">notifications_off</span>
+    <p>You have no new notifications.</p>
+  </div>
+
+  <div class="notification-list" *ngIf="!isLoading && notifications.length > 0">
+    <div class="notification-item" *ngFor="let notification of notifications" [class.unread]="!notification.isRead">
+      <div class="icon-orb">
+        <span class="material-icons-outlined">{{ getIconForType(notification.type) }}</span>
+      </div>
+      <div class="notification-content">
+        <h4>{{ notification.title || notification.type + ' Alert' }}</h4>
+        <p>{{ notification.message }}</p>
+        <span class="time">{{ notification.createdAt | date:'medium' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

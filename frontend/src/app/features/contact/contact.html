@@ -1,0 +1,121 @@
+<!-- Public Nav -->
+<nav class="public-nav">
+  <div class="nav-brand">
+    <span class="material-icons-outlined">account_balance</span>
+    <span>FinVault</span>
+  </div>
+  <div class="nav-links">
+    <a routerLink="/">Home</a>
+    <a routerLink="/about">About Us</a>
+    <a routerLink="/auth/login" class="btn-outline">Login</a>
+    <a routerLink="/auth/register" class="btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="contact-hero">
+  <div class="page-badge">
+    <span class="material-icons-outlined">mail</span>
+    Contact Us
+  </div>
+  <h1>We'd love to <span class="accent-text">hear from you.</span></h1>
+  <p>Have a question, feedback, or just want to say hello? Our team is here to help.</p>
+</section>
+
+<!-- Contact Body -->
+<section class="contact-body">
+  <div class="contact-grid">
+
+    <!-- Info Column -->
+    <div class="contact-info">
+      <h2>Get in touch</h2>
+      <p>Reach out through any of the channels below, or fill out the form and we'll get back to you within 24 hours.</p>
+
+      <div class="info-items">
+        <div class="info-item">
+          <span class="material-icons-outlined">email</span>
+          <div>
+            <div class="info-label">Email</div>
+            <div class="info-value">support&#64;finvault.io</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="material-icons-outlined">phone</span>
+          <div>
+            <div class="info-label">Phone</div>
+            <div class="info-value">+1 (800) 555-0199</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="material-icons-outlined">schedule</span>
+          <div>
+            <div class="info-label">Support Hours</div>
+            <div class="info-value">24/7 — always available</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="material-icons-outlined">location_on</span>
+          <div>
+            <div class="info-label">Headquarters</div>
+            <div class="info-value">123 Finance St, San Francisco, CA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Column -->
+    <div class="contact-form-wrapper">
+      <div *ngIf="!submitted; else successMsg">
+        <h2>Send us a message</h2>
+        <form class="contact-form" (ngSubmit)="onSubmit()" #contactForm="ngForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input id="name" type="text" placeholder="Your name" [(ngModel)]="form.name" name="name" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input id="email" type="email" placeholder="you@example.com" [(ngModel)]="form.email" name="email" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input id="subject" type="text" placeholder="How can we help?" [(ngModel)]="form.subject" name="subject" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" rows="5" placeholder="Tell us more..." [(ngModel)]="form.message" name="message" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn" [disabled]="contactForm.invalid">
+            <span class="material-icons-outlined">send</span>
+            Send Message
+          </button>
+        </form>
+      </div>
+
+      <ng-template #successMsg>
+        <div class="success-state">
+          <span class="material-icons-outlined success-icon">check_circle</span>
+          <h2>Message sent!</h2>
+          <p>Thanks for reaching out. We'll get back to you within 24 hours.</p>
+          <button class="submit-btn" (click)="submitted = false">Send Another</button>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="public-footer">
+  <div class="footer-brand">
+    <span class="material-icons-outlined">account_balance</span>
+    <span>FinVault</span>
+  </div>
+  <div class="footer-links">
+    <a routerLink="/">Home</a>
+    <a routerLink="/about">About Us</a>
+    <a routerLink="/auth/login">Login</a>
+  </div>
+  <p class="footer-copy">&copy; 2026 FinVault. All rights reserved.</p>
+</footer>

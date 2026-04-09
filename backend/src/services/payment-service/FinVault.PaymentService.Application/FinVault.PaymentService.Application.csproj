@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+    <PackageReference Include="MassTransit.Abstractions" Version="8.3.6" />
+    <ProjectReference Include="..\FinVault.PaymentService.Domain\FinVault.PaymentService.Domain.csproj" />
+    <ProjectReference Include="..\..\shared\FinVault.Shared.Contracts\FinVault.Shared.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

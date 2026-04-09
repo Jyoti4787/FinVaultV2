@@ -1,0 +1,420 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--primary-accent);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.primary-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary-accent);
+  color: var(--surface);
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.primary-btn:hover {
+  background-color: #1a1714;
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--borders);
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background-color: rgba(47, 42, 36, 0.05);
+}
+
+.error-banner {
+  background-color: rgba(138, 59, 46, 0.1);
+  color: var(--danger);
+  padding: 0.75rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.label-with-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.network-badge {
+  font-size: 0.65rem;
+  background-color: var(--primary-accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Add Card Form */
+.add-card-panel {
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.add-card-panel h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-main);
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+input, select {
+  padding: 0.75rem;
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  outline: none;
+  background-color: var(--surface);
+  font-family: inherit;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 2px rgba(47, 42, 36, 0.1);
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  perspective: 1000px;
+}
+
+/* Base Card Style (Standard / Pending) */
+.card-item {
+  position: relative;
+  height: 230px;
+  padding: 1.25rem 1.75rem;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+
+/* --- NETWORK THEMES --- */
+
+/* Visa: Deep Royal Blue */
+.card-item.visa {
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* MasterCard: Crimson & Fire */
+.card-item.mastercard {
+  background: linear-gradient(135deg, #b71c1c 0%, #e65100 100%);
+}
+
+/* RuPay: Emerald & Teal */
+.card-item.rupay {
+  background: linear-gradient(135deg, #004d40 0%, #006064 100%);
+}
+
+/* Amex: Platinum Silver/Gold */
+.card-item.amex {
+  background: linear-gradient(135deg, #37474f 0%, #263238 100%);
+  border: 1px solid rgba(199, 160, 77, 0.4);
+}
+
+/* Universal Premium (Verified Override) */
+.card-item.verified.visa, .card-item.verified.mastercard {
+  /* Let network colors shine, but maybe add a sublte glow */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* If you want Verified to ALWAYS be Noir Metal, uncomment this: */
+/*
+.card-item.verified {
+  background: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%) !important;
+  border: 1px solid rgba(199, 160, 77, 0.3) !important;
+}
+*/
+
+.card-item:hover {
+  transform: translateY(-8px) rotateX(4deg) rotateY(4deg);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+}
+
+.card-item.verified:hover {
+  box-shadow: 0 30px 60px rgba(199, 160, 77, 0.1), 0 0 0 1px rgba(199, 160, 77, 0.4);
+}
+
+/* Card Glare Overlay */
+.card-glare {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+  transition: 0.5s;
+  z-index: 1;
+}
+
+.card-item:hover .card-glare {
+  top: -50%;
+  left: -50%;
+}
+
+/* EMV Chip Visual */
+.chip-container {
+  width: 48px;
+  height: 36px;
+  background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 4px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.chip-line {
+  width: 50%;
+  height: 50%;
+  border: 0.5px solid rgba(0,0,0,0.1);
+}
+
+/* Card Branding */
+.card-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.card-actions-top {
+  position: absolute;
+  top: 1rem;
+  right: 3rem; /* Leave room for status indicator */
+  opacity: 0;
+  transition: 0.3s;
+  z-index: 10;
+}
+
+.card-item:hover .card-actions-top {
+  opacity: 1;
+}
+
+.action-btn-sm {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.action-btn-sm:hover {
+  background: var(--danger);
+}
+
+.card-brand {
+  text-align: right;
+  color: rgba(255,255,255,0.9);
+}
+
+.brand-text {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.brand-icon {
+  font-size: 2rem !important;
+  opacity: 0.8;
+}
+
+/* Card Number */
+.card-number-wrapper {
+  margin: 1.25rem 0;
+  z-index: 2;
+}
+
+.card-number {
+  display: flex;
+  gap: 1rem;
+  font-family: 'Space Mono', 'Roboto Mono', monospace;
+  font-size: 1.4rem;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.last-digits {
+  color: #fff;
+}
+
+/* Financials Row */
+.card-financials {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  z-index: 2;
+  gap: 1rem;
+}
+
+.financial-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.fin-label {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.fin-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Card Footer Details */
+.card-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 2;
+}
+
+.holder-label, .expiry-label {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.card-holder {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-expiry {
+  font-size: 1rem;
+  color: #fff;
+  font-family: monospace;
+}
+
+/* Indicators and Actions */
+.card-status-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--warning);
+  box-shadow: 0 0 10px var(--warning);
+}
+
+.card-status-indicator.active {
+  background-color: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+/* Animations */
+.loading-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  gap: 1rem;
+}
+
+.empty-state span {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

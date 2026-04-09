@@ -1,0 +1,50 @@
+<div class="auth-wrapper">
+  <div class="auth-card glass-panel">
+    <div class="auth-brand">
+      <span class="material-icons-outlined brand-icon">account_balance</span>
+      <h2>FinVault</h2>
+    </div>
+    
+    <div class="auth-header">
+      <h1>Create an Account</h1>
+      <p>Fill out the fields below to get started.</p>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div *ngIf="errorMessage" class="error-banner">
+        <span class="material-icons-outlined">error_outline</span>
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-row">
+        <div class="form-group grid-item">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" [(ngModel)]="registerForm.firstName" placeholder="John" required />
+        </div>
+        <div class="form-group grid-item">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" [(ngModel)]="registerForm.lastName" placeholder="Doe" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" [(ngModel)]="registerForm.email" placeholder="you@example.com" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="registerForm.password" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="auth-submit primary-btn" [disabled]="isLoading">
+        <span class="material-icons-outlined spin" *ngIf="isLoading">refresh</span>
+        {{ isLoading ? 'Registering...' : 'Create Account' }}
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      Already have an account? <a routerLink="/auth/login">Sign in</a>
+    </div>
+  </div>
+</div>
