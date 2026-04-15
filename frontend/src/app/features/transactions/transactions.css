@@ -119,6 +119,22 @@
   color: var(--success);
 }
 
+.status-badge {
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--borders);
+  color: var(--text-muted);
+}
+
+.status-badge.success {
+  background-color: rgba(61, 107, 53, 0.12);
+  color: var(--success);
+}
+
 .error-banner {
   background-color: rgba(138, 59, 46, 0.1);
   color: var(--danger);

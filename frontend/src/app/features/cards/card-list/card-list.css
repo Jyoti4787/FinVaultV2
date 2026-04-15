@@ -74,12 +74,6 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateX(10px); }
-  to { opacity: 1; transform: translateX(0); }
 }
 
 /* Add Card Form */
@@ -135,266 +129,300 @@ input:focus, select:focus {
 /* Cards Grid */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-  perspective: 1000px;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
 }
 
-/* Base Card Style (Standard / Pending) */
+.card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Real Credit Card Design */
 .card-item {
   position: relative;
-  height: 230px;
-  padding: 1.25rem 1.75rem;
-  border-radius: 14px;
+  width: 360px;
+  height: 220px;
+  padding: 1.75rem;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 1px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
-  transform-style: preserve-3d;
+  color: #fff;
 }
 
-/* --- NETWORK THEMES --- */
-
-/* Visa: Deep Royal Blue */
+/* Network Gradients */
 .card-item.visa {
-  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #1565C0 0%, #1976D2 50%, #1E88E5 100%);
 }
 
-/* MasterCard: Crimson & Fire */
 .card-item.mastercard {
-  background: linear-gradient(135deg, #b71c1c 0%, #e65100 100%);
+  background: linear-gradient(135deg, #D32F2F 0%, #E64A19 50%, #F57C00 100%);
 }
 
-/* RuPay: Emerald & Teal */
 .card-item.rupay {
-  background: linear-gradient(135deg, #004d40 0%, #006064 100%);
+  background: linear-gradient(135deg, #00796B 0%, #00897B 50%, #00ACC1 100%);
 }
 
-/* Amex: Platinum Silver/Gold */
 .card-item.amex {
-  background: linear-gradient(135deg, #37474f 0%, #263238 100%);
-  border: 1px solid rgba(199, 160, 77, 0.4);
+  background: linear-gradient(135deg, #37474F 0%, #455A64 50%, #546E7A 100%);
 }
-
-/* Universal Premium (Verified Override) */
-.card-item.verified.visa, .card-item.verified.mastercard {
-  /* Let network colors shine, but maybe add a sublte glow */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-/* If you want Verified to ALWAYS be Noir Metal, uncomment this: */
-/*
-.card-item.verified {
-  background: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%) !important;
-  border: 1px solid rgba(199, 160, 77, 0.3) !important;
-}
-*/
 
 .card-item:hover {
-  transform: translateY(-8px) rotateX(4deg) rotateY(4deg);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
-.card-item.verified:hover {
-  box-shadow: 0 30px 60px rgba(199, 160, 77, 0.1), 0 0 0 1px rgba(199, 160, 77, 0.4);
-}
-
-/* Card Glare Overlay */
-.card-glare {
-  position: absolute;
-  top: -100%;
-  left: -100%;
-  width: 300%;
-  height: 300%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-  pointer-events: none;
-  transition: 0.5s;
-  z-index: 1;
-}
-
-.card-item:hover .card-glare {
-  top: -50%;
-  left: -50%;
-}
-
-/* EMV Chip Visual */
-.chip-container {
-  width: 48px;
-  height: 36px;
-  background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%);
-  border-radius: 6px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 4px;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-}
-
-.chip-line {
-  width: 50%;
-  height: 50%;
-  border: 0.5px solid rgba(0,0,0,0.1);
-}
-
-/* Card Branding */
+/* Card Header */
 .card-item-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  z-index: 2;
 }
 
-.card-actions-top {
-  position: absolute;
-  top: 1rem;
-  right: 3rem; /* Leave room for status indicator */
-  opacity: 0;
-  transition: 0.3s;
-  z-index: 10;
+/* EMV Chip */
+.chip-container {
+  width: 45px;
+  height: 35px;
+  background: linear-gradient(135deg, #E6D7A3 0%, #D4AF37 50%, #B8941F 100%);
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  padding: 4px;
+  gap: 1px;
+  box-shadow: 
+    inset 0 2px 4px rgba(0,0,0,0.3),
+    0 1px 2px rgba(0,0,0,0.2);
 }
 
-.card-item:hover .card-actions-top {
-  opacity: 1;
+.chip-line {
+  background: rgba(0,0,0,0.15);
+  border-radius: 1px;
 }
 
-.action-btn-sm {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  transition: 0.2s;
-}
-
-.action-btn-sm:hover {
-  background: var(--danger);
-}
-
+/* Card Brand */
 .card-brand {
   text-align: right;
-  color: rgba(255,255,255,0.9);
 }
 
 .brand-text {
-  display: block;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 2px;
-}
-
-.brand-icon {
-  font-size: 2rem !important;
-  opacity: 0.8;
+  opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 /* Card Number */
 .card-number-wrapper {
-  margin: 1.25rem 0;
-  z-index: 2;
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .card-number {
-  display: flex;
-  gap: 1rem;
-  font-family: 'Space Mono', 'Roboto Mono', monospace;
+  font-family: 'Courier New', monospace;
   font-size: 1.4rem;
-  color: #fff;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.last-digits {
-  color: #fff;
-}
-
-/* Financials Row */
-.card-financials {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  z-index: 2;
-  gap: 1rem;
-}
-
-.financial-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.fin-label {
-  font-size: 0.6rem;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 1px;
-  margin-bottom: 2px;
-}
-
-.fin-value {
-  font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
+  letter-spacing: 3px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  flex: 1;
 }
 
-/* Card Footer Details */
-.card-item-footer {
+.reveal-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  z-index: 2;
-}
-
-.holder-label, .expiry-label {
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-
-.card-holder {
-  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
   color: #fff;
-  font-weight: 500;
+}
+
+.reveal-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.reveal-btn span {
+  font-size: 1.1rem;
+}
+
+/* CVV Display */
+.card-cvv {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cvv-label {
+  font-size: 0.7rem;
+  opacity: 0.7;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.card-expiry {
-  font-size: 1rem;
-  color: #fff;
-  font-family: monospace;
+.cvv-value {
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-/* Indicators and Actions */
+/* Card Footer */
+.card-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.footer-left, .footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.footer-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.holder-label, .expiry-label {
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.card-holder {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-expiry {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: monospace;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Status Indicator */
 .card-status-indicator {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background-color: var(--warning);
-  box-shadow: 0 0 10px var(--warning);
+  background-color: #FFC107;
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
 }
 
 .card-status-indicator.active {
-  background-color: var(--success);
-  box-shadow: 0 0 10px var(--success);
+  background-color: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
 }
 
-/* Animations */
+/* External Actions */
+.card-external-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.action-btn-external {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.action-btn-external:hover {
+  background: rgba(47, 42, 36, 0.05);
+  color: var(--primary-accent);
+}
+
+.card-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  min-width: 160px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-main);
+  text-align: left;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.dropdown-item:hover {
+  background: rgba(47, 42, 36, 0.05);
+}
+
+.dropdown-item.text-danger {
+  color: var(--danger);
+}
+
+.dropdown-item.text-danger:hover {
+  background: rgba(138, 59, 46, 0.05);
+}
+
+/* Loading & Empty States */
 .loading-state, .empty-state {
   display: flex;
   flex-direction: column;
@@ -418,3 +446,166 @@ input:focus, select:focus {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ── OTP VERIFICATION MODAL ────────────────────────────────────── */
+.otp-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.otp-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem 2rem;
+  border-radius: 16px;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+  background: var(--surface, #fff);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.otp-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.otp-modal-close:hover {
+  background: rgba(47, 42, 36, 0.08);
+  color: var(--text-main);
+}
+
+.otp-modal-icon {
+  margin-bottom: 1rem;
+}
+
+.otp-modal-icon span {
+  font-size: 3rem;
+  color: var(--primary-accent, #2F2A24);
+  opacity: 0.85;
+}
+
+.otp-modal h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.otp-modal-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.otp-error {
+  background-color: rgba(138, 59, 46, 0.1);
+  color: var(--danger, #c0392b);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.otp-error span {
+  font-size: 1.1rem;
+}
+
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.otp-input-group {
+  display: flex;
+  justify-content: center;
+}
+
+.otp-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  letter-spacing: 0.6em;
+  border: 2px solid var(--borders, #e0e0e0);
+  border-radius: 12px;
+  outline: none;
+  background: var(--surface, #fff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.otp-input:focus {
+  border-color: var(--primary-accent, #2F2A24);
+  box-shadow: 0 0 0 3px rgba(47, 42, 36, 0.12);
+}
+
+.otp-submit {
+  width: 100%;
+  justify-content: center;
+  padding: 0.9rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+.otp-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.otp-resend {
+  margin-top: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--primary-accent, #2F2A24);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.otp-resend:hover {
+  opacity: 0.7;
+}
+
+.otp-resend:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+

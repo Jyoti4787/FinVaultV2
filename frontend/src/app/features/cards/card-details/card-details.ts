@@ -1,14 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CardService } from '../../../core/services/card';
 import { Card } from '../../../core/interfaces/api.interfaces';
 
 @Component({
   selector: 'app-card-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './card-details.html',
   styleUrl: './card-details.css',
 })
@@ -31,21 +31,33 @@ export class CardDetails implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.cardId = params['id'];
-      this.loadCard();
-      this.loadUtilization();
+
+      // Read card passed from card list via router navigation state
+      const navState = history.state;
+      if (navState?.card && navState.card.cardId === this.cardId) {
+        this.card = navState.card as Card;
+        this.newLimit = this.card!.creditLimit;
+        this.isLoading = false;
+        this.loadUtilization();
+      } else {
+        this.loadCard();
+        this.loadUtilization();
+      }
     });
   }
 
   loadCard() {
     this.isLoading = true;
     this.cardService.getCard(this.cardId).subscribe({
-      next: (card) => {
-        this.card = card;
-        this.newLimit = card.creditLimit;
+      next: (card: any) => {
+        const cardData: Card = card?.data ?? card;
+        this.card = cardData;
+        this.newLimit = cardData?.creditLimit ?? 0;
         this.isLoading = false;
       },
-      error: () => {
-        this.errorMessage = 'Failed to load card details.';
+      error: (err) => {
+        console.error('Failed to load card details', err);
+        this.errorMessage = 'Failed to load card details. Please try again.';
         this.isLoading = false;
       }
     });

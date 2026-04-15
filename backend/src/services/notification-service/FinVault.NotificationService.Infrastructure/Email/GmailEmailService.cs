@@ -72,6 +72,8 @@ public class GmailEmailService : IEmailService, IEmailSender
             "login" => "log in to your account",
             "passwordreset" => "reset your password",
             "payment" => "confirm your payment",
+            "cardreveal" => "reveal your card details",
+            "signupverification" => "complete your registration",
             _ => "verify your requested action"
         };
 

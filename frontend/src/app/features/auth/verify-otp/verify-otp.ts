@@ -21,12 +21,17 @@ export class VerifyOtp implements OnInit {
   public otp = '';
   public isLoading = false;
   public errorMessage = '';
+  public isResending = false;
+  public resendMessage = '';
 
   ngOnInit() {
-    // If we passed email via router state from Login/Register
+    // Try to get email from router state first, then from localStorage
     const navParams = this.router.getCurrentNavigation()?.extras.state;
     if (navParams && navParams['email']) {
       this.email = navParams['email'];
+    } else {
+      // Fallback: get from localStorage (set by login or register page)
+      this.email = localStorage.getItem('pending_verification_email') || '';
     }
   }
 
@@ -39,7 +44,7 @@ export class VerifyOtp implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.verifyOtp({ email: this.email, otp: this.otp }).subscribe({
+    this.authService.verifyOtp({ email: this.email, otpCode: this.otp }).subscribe({
       next: (res) => {
         // Save the real token
         this.tokenService.setTokens(res.accessToken, res.refreshToken);
@@ -48,12 +53,44 @@ export class VerifyOtp implements OnInit {
         localStorage.setItem('user_role', res.role);
         localStorage.setItem('user_id', res.userId);
 
+        // Clean up pending state
+        localStorage.removeItem('pending_verification_email');
+        
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+
+        // Route based on role
+        const returnUrl = localStorage.getItem('pending_return_url') || '/dashboard';
+        localStorage.removeItem('pending_return_url');
+
+        const destination = res.role === 'Admin' ? '/admin/cards' : returnUrl;
+        this.router.navigateByUrl(destination);
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Invalid OTP. Please try again.';
         this.isLoading = false;
+      }
+    });
+  }
+
+  resendOtp() {
+    if (!this.email) {
+      this.errorMessage = 'Please enter your email address first.';
+      return;
+    }
+
+    this.isResending = true;
+    this.resendMessage = '';
+    this.errorMessage = '';
+
+    this.authService.sendMfa({ email: this.email }).subscribe({
+      next: () => {
+        this.isResending = false;
+        this.resendMessage = 'A new code has been sent to your email.';
+        setTimeout(() => this.resendMessage = '', 5000);
+      },
+      error: (err) => {
+        this.isResending = false;
+        this.errorMessage = err.error?.message || 'Failed to resend OTP. Please try again.';
       }
     });
   }

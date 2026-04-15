@@ -98,14 +98,13 @@
 </div>
 
 <div class="cards-grid" *ngIf="!isLoading">
-  <div class="card-item" *ngFor="let card of cards" 
-       [class.verified]="card.isVerified"
-       [class.visa]="card.network?.toLowerCase() === 'visa' || (card.issuerName?.toLowerCase()?.includes('visa'))"
-       [class.mastercard]="card.network?.toLowerCase() === 'mastercard' || (card.issuerName?.toLowerCase()?.includes('mastercard'))"
-       [class.rupay]="card.network?.toLowerCase() === 'rupay' || (card.issuerName?.toLowerCase()?.includes('rupay'))"
-       [class.amex]="card.network?.toLowerCase() === 'amex' || (card.issuerName?.toLowerCase()?.includes('amex'))">
-    <!-- Card Glare Effect -->
-    <div class="card-glare"></div>
+  <div class="card-wrapper" *ngFor="let card of cards">
+    <div class="card-item"
+         [class.visa]="card.network.toLowerCase() === 'visa' || card.issuerName.toLowerCase().includes('visa')"
+         [class.mastercard]="card.network.toLowerCase() === 'mastercard' || card.issuerName.toLowerCase().includes('mastercard')"
+         [class.rupay]="card.network.toLowerCase() === 'rupay' || card.issuerName.toLowerCase().includes('rupay')"
+         [class.amex]="card.network.toLowerCase() === 'amex' || card.issuerName.toLowerCase().includes('amex')"
+         (click)="navigateToDetails(card, $event)">
     
     <div class="card-item-header">
       <div class="chip-container">
@@ -113,53 +112,115 @@
         <div class="chip-line"></div>
         <div class="chip-line"></div>
         <div class="chip-line"></div>
-      </div>
-      
-      <!-- Top Actions (Delete) -->
-      <div class="card-actions-top">
-        <button class="action-btn-sm delete" (click)="removeCard(card.cardId)" title="Delete Card">
-          <span class="material-icons-outlined">delete</span>
-        </button>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
+        <div class="chip-line"></div>
       </div>
 
       <div class="card-brand">
         <span class="brand-text">{{ card.network || card.issuerName || 'VISA' }}</span>
-        <span class="material-icons-outlined brand-icon" *ngIf="card.network === 'Visa'">payments</span>
-        <span class="material-icons-outlined brand-icon" *ngIf="card.network !== 'Visa'">credit_card</span>
       </div>
     </div>
 
     <div class="card-number-wrapper">
       <div class="card-number">
-        <span>****</span>
-        <span>****</span>
-        <span>****</span>
-        <span class="last-digits">{{ card.maskedNumber || '1234' }}</span>
+        {{ revealedCardId === card.cardId ? card.fullNumber : (card.maskedNumber || '**** **** **** 1234') }}
       </div>
+      <button class="reveal-btn" (click)="toggleReveal(card.cardId, $event)" title="Reveal card details">
+        <span class="material-icons-outlined">{{ revealedCardId === card.cardId ? 'visibility_off' : 'visibility' }}</span>
+      </button>
     </div>
 
-    <div class="card-financials">
-      <div class="financial-item">
-        <div class="fin-label">LIMIT / BALANCE</div>
-        <div class="fin-value">₹{{ card.creditLimit | number:'1.0-0' }} / ₹{{ card.outstandingBalance | number:'1.0-0' }}</div>
-      </div>
-      <div class="financial-item">
-        <div class="fin-label">CYCLE / DUE DATE</div>
-        <div class="fin-value">Day {{ card.billingCycleStartDay }} / {{ card.dueDate ? (card.dueDate | date:'MMM dd') : 'N/A' }}</div>
-      </div>
+    <div class="card-cvv" *ngIf="revealedCardId === card.cardId">
+      <span class="cvv-label">CVV:</span>
+      <span class="cvv-value">{{ card.cvv || '***' }}</span>
     </div>
 
     <div class="card-item-footer">
       <div class="footer-left">
-        <div class="holder-label">CARD HOLDER</div>
+        <div class="holder-label">Card Holder</div>
         <div class="card-holder">{{ card.cardholderName || 'FINVAULT USER' }}</div>
       </div>
       <div class="footer-right">
-        <div class="expiry-label">EXPIRES</div>
+        <div class="expiry-label">Expires</div>
         <div class="card-expiry">{{ card.expiryMonth | number:'2.0' }}/{{ card.expiryYear.toString().slice(-2) }}</div>
       </div>
     </div>
 
     <div class="card-status-indicator" [class.active]="card.isVerified"></div>
+  </div>
+
+    <div class="card-external-actions">
+      <button class="action-btn-external" (click)="toggleDropdown(card.cardId, $event)" title="More Options">
+        <span class="material-icons-outlined">more_vert</span>
+      </button>
+      <div class="card-dropdown" *ngIf="activeDropdownId === card.cardId">
+        <a class="dropdown-item" (click)="navigateToDetails(card, $event)">
+          <span class="material-icons-outlined">visibility</span> View Details
+        </a>
+        <button class="dropdown-item text-danger" (click)="removeCard(card.cardId)">
+          <span class="material-icons-outlined">delete</span> Delete Card
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── OTP VERIFICATION MODAL ────────────────────────────────────── -->
+<div class="otp-modal-overlay" *ngIf="showOtpModal" (click)="closeOtpModal($event)">
+  <div class="otp-modal glass-panel" (click)="$event.stopPropagation()">
+    <button class="otp-modal-close" (click)="closeOtpModal($event)">
+      <span class="material-icons-outlined">close</span>
+    </button>
+
+    <div class="otp-modal-icon">
+      <span class="material-icons-outlined">verified_user</span>
+    </div>
+
+    <h3>Verify Your Identity</h3>
+    <p class="otp-modal-desc" *ngIf="otpSending">
+      <span class="material-icons-outlined spin" style="font-size: 1rem; vertical-align: middle;">refresh</span>
+      Sending OTP to your email...
+    </p>
+    <p class="otp-modal-desc" *ngIf="otpSent && !otpSending">
+      A 6-digit code has been sent to your email. Enter it below to reveal card details.
+    </p>
+
+    <div *ngIf="otpError" class="otp-error">
+      <span class="material-icons-outlined">error_outline</span>
+      {{ otpError }}
+    </div>
+
+    <form (ngSubmit)="submitRevealOtp()" class="otp-form">
+      <div class="otp-input-group">
+        <input 
+          type="text" 
+          [(ngModel)]="otpCode" 
+          name="otpCode"
+          placeholder="Enter 6-digit code"
+          maxlength="6"
+          autocomplete="one-time-code"
+          class="otp-input"
+          required />
+      </div>
+
+      <button type="submit" class="primary-btn otp-submit" [disabled]="otpLoading || otpCode.length < 6">
+        <span class="material-icons-outlined spin" *ngIf="otpLoading" style="font-size: 1rem;">refresh</span>
+        {{ otpLoading ? 'Verifying...' : 'Reveal Card Details' }}
+      </button>
+    </form>
+
+    <button class="otp-resend" (click)="sendRevealOtp()" [disabled]="otpSending">
+      {{ otpSending ? 'Sending...' : 'Resend Code' }}
+    </button>
   </div>
 </div>

@@ -28,6 +28,9 @@ public class User
 
     public string LastName { get; set; } = string.Empty;
 
+    // Phone number with country code (e.g., +919876543210)
+    public string? PhoneNumber { get; set; }
+
     // Role decides what the user can access
     // "User" = normal user
     // "Admin" = can see everything

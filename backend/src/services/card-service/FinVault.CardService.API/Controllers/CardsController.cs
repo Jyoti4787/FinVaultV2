@@ -76,11 +76,17 @@ public class CardsController : ControllerBase
         return Ok(new { success = true, data = result });
     }
 
-    /// <summary>Reveal full card number and CVV (temporary access)</summary>
-    [HttpGet("{cardId:guid}/reveal")]
-    public async Task<IActionResult> RevealCard(Guid cardId, CancellationToken ct)
+    /// <summary>Reveal full card number and CVV (requires OTP verification)</summary>
+    [HttpPost("{cardId:guid}/reveal")]
+    public async Task<IActionResult> RevealCard(
+        Guid cardId, [FromBody] RevealCardRequest request, CancellationToken ct)
     {
-        var result = await _mediator.Send(new RevealCardQuery(cardId, GetUserId()), ct);
+        var email = User.FindFirstValue(ClaimTypes.Email)
+            ?? User.FindFirstValue("email")
+            ?? throw new UnauthorizedAccessException("Email claim not found in token.");
+
+        var result = await _mediator.Send(
+            new RevealCardQuery(cardId, GetUserId(), email, request.OtpCode), ct);
         return Ok(new { success = true, data = result });
     }
 
@@ -158,5 +164,7 @@ public record AddCardRequest(
     string Cvv,
     decimal CreditLimit, int BillingCycleStartDay,
     Guid CorrelationId);
+
+public record RevealCardRequest(string OtpCode);
 
 public record UpdateLimitRequest(decimal NewLimit);

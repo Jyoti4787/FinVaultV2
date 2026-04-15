@@ -34,10 +34,15 @@ try
     Log.Information("Starting FinVault Card Service...");
 
     builder.Services.AddDbContext<CardDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("CardDb")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("CardDb"))
+               .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
     builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
     builder.Services.AddScoped<ICardIssuerRepository, CardIssuerRepository>();
+
+    // OTP Verification — calls identity-service to verify OTP for card reveal
+    builder.Services.AddHttpClient("IdentityService");
+    builder.Services.AddScoped<ICardOtpVerifier, FinVault.CardService.Infrastructure.OtpVerification.IdentityOtpVerifier>();
 
     builder.Services.AddMediatR(cfg =>
     {
@@ -49,6 +54,8 @@ try
     builder.Services.AddMassTransit(x =>
     {
         x.AddConsumer<PaymentCompletedConsumer>();
+        x.AddConsumer<RewardRedeemedConsumer>();
+
         x.UsingRabbitMq((ctx, cfg) =>
         {
             cfg.Host(builder.Configuration["RabbitMQ:Host"], h =>
@@ -56,7 +63,9 @@ try
                 h.Username(builder.Configuration["RabbitMQ:Username"]!);
                 h.Password(builder.Configuration["RabbitMQ:Password"]!);
             });
+
             cfg.ReceiveEndpoint("card-service.PaymentCompleted", e => e.ConfigureConsumer<PaymentCompletedConsumer>(ctx));
+            cfg.ReceiveEndpoint("card-service.RewardRedeemed", e => e.ConfigureConsumer<RewardRedeemedConsumer>(ctx));
         });
     });
 

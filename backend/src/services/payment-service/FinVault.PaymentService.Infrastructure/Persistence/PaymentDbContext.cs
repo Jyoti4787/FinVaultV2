@@ -37,6 +37,9 @@ public class PaymentDbContext : DbContext
     
     // Saga State Persistence
     public DbSet<PaymentState> PaymentStates { get; set; }
+    
+    // Reward Points
+    public DbSet<RewardPoint> RewardPoints { get; set; }
 
     // This method is where we "Design" the table columns
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -102,6 +105,17 @@ public class PaymentDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.BillId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configure RewardPoints table
+        modelBuilder.Entity<RewardPoint>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Description).HasMaxLength(200);
+            entity.Property(e => e.Type).HasMaxLength(20);
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.PaymentId);
+            entity.HasIndex(e => e.CardId);
         });
     }
 }

@@ -1,7 +1,7 @@
 <div class="page-header">
   <div>
     <h1>Rewards</h1>
-    <p class="subtitle">Turn your spending into cash back and exclusive perks.</p>
+    <p class="subtitle">Earn points on every payment. Redeem as cashback on bills & repayments.</p>
   </div>
 </div>
 
@@ -13,40 +13,84 @@
 </div>
 
 <div class="rewards-grid">
-  <div class="points-card glass-panel text-center">
+
+  <!-- Points Summary Card -->
+  <div class="points-card glass-panel">
+    <div class="earn-rate-badge">
+      <span class="material-icons-outlined">bolt</span> 1 point per ₹10 spent
+    </div>
     <h3>Available Points</h3>
-    <div class="points-amount">{{ points | number }}</div>
-    <p class="points-value">Value: ${{ (points / 100) | number:'1.2-2' }}</p>
-    
-    <button class="primary-btn w-full mt-4 justify-center" (click)="redeem()" [disabled]="isRedeeming || isLoading">
-      <span class="material-icons-outlined">card_giftcard</span>
-      {{ isRedeeming ? 'Processing...' : 'Redeem 1000 Points' }}
-    </button>
+    <div class="points-amount" *ngIf="!isLoading">{{ points | number }}</div>
+    <div class="points-amount loading-shimmer" *ngIf="isLoading">...</div>
+    <p class="points-value">Cashback Value: <strong>₹{{ cashbackValue | number:'1.2-2' }}</strong></p>
+
+    <div class="redeem-section">
+      <h4>Redeem Points</h4>
+
+      <div class="form-group">
+        <label>Apply credit back to card</label>
+        <select [(ngModel)]="selectedCardId" class="custom-select">
+          <option value="" disabled>Select a card</option>
+          <option *ngFor="let card of cards" [value]="card.cardId">
+            {{ card.issuerName }} — {{ card.maskedNumber }}
+          </option>
+        </select>
+        <p class="field-hint" *ngIf="cards.length === 0">No cards found. Please add a card first.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Points to redeem (min 100)</label>
+        <div class="amount-input-wrapper">
+          <span class="material-icons-outlined">stars</span>
+          <input type="number" [(ngModel)]="redeemPoints" min="100" [max]="points" />
+        </div>
+        <p class="field-hint">= ₹{{ redeemCashback | number:'1.2-2' }} cashback</p>
+      </div>
+
+      <button class="primary-btn w-full justify-center" (click)="redeem()" [disabled]="isRedeeming || isLoading || points < 100">
+        <span class="material-icons-outlined" *ngIf="!isRedeeming">card_giftcard</span>
+        <span class="material-icons-outlined spin" *ngIf="isRedeeming">refresh</span>
+        {{ isRedeeming ? 'Processing...' : 'Redeem Points' }}
+      </button>
+    </div>
   </div>
 
+  <!-- Points History -->
   <div class="history-panel glass-panel">
-    <h3>Redemption History</h3>
-    
+    <h3>Points History</h3>
+
+    <div class="loading-state" *ngIf="isLoading">
+      <span class="material-icons-outlined spin">refresh</span> Loading rewards...
+    </div>
+
     <table class="data-table" *ngIf="!isLoading && history.length > 0">
       <thead>
         <tr>
           <th>Date</th>
-          <th>Reward</th>
+          <th>Description</th>
+          <th>Type</th>
           <th class="text-right">Points</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let h of history">
-          <td>{{ h.date | date:'shortDate' }}</td>
+          <td>{{ h.createdAt | date:'dd MMM yyyy' }}</td>
           <td>{{ h.description }}</td>
-          <td class="text-right text-danger">-{{ h.pointsUsed }}</td>
+          <td>
+            <span class="reward-type" [class.earned]="h.type === 'Earned'" [class.redeemed]="h.type === 'Redeemed'">
+              {{ h.type === 'Earned' ? '+ Earned' : '- Redeemed' }}
+            </span>
+          </td>
+          <td class="text-right font-medium" [class.text-success]="h.type === 'Earned'" [class.text-danger]="h.type === 'Redeemed'">
+            {{ h.type === 'Earned' ? '+' : '-' }}{{ h.points }}
+          </td>
         </tr>
       </tbody>
     </table>
 
     <div class="empty-state" *ngIf="!isLoading && history.length === 0">
-      <span class="material-icons-outlined">history</span>
-      <p>No past redemptions found.</p>
+      <span class="material-icons-outlined">stars</span>
+      <p>Make a payment to start earning reward points!</p>
     </div>
   </div>
 </div>

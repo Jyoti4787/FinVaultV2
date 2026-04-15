@@ -37,6 +37,20 @@ public class UsersController : ControllerBase
         return Ok(new { success = true, data = result });
     }
 
+    /// <summary>Update user profile (email cannot be changed)</summary>
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request, CancellationToken ct)
+    {
+        var result = await _mediator.Send(
+            new FinVault.IdentityService.Application.Commands.UpdateProfile.UpdateProfileCommand(
+                GetUserId(), 
+                request.FirstName, 
+                request.LastName, 
+                request.PhoneNumber), 
+            ct);
+        return Ok(new { success = true, data = result });
+    }
+
     /// <summary>Upload a profile picture — stored in SQL Server as binary</summary>
     [HttpPost("profile/picture")]
     [Consumes("multipart/form-data")]

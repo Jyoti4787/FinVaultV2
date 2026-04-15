@@ -31,7 +31,7 @@ export class Auth {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.baseUrl}/login`, payload).pipe(this.unwrap());
   }
 
-  verifyOtp(payload: { email: string; otp: string }): Observable<AuthResponse> {
+  verifyOtp(payload: { email: string; otpCode: string }): Observable<AuthResponse> {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.baseUrl}/login/verify-otp`, payload).pipe(this.unwrap());
   }
 
@@ -39,7 +39,7 @@ export class Auth {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.baseUrl}/refresh`, payload).pipe(this.unwrap());
   }
 
-  sendMfa(payload: { email: string }): Observable<any> {
+  sendMfa(payload: { email: string; purpose?: string }): Observable<any> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/mfa/send`, payload).pipe(this.unwrap());
   }
 

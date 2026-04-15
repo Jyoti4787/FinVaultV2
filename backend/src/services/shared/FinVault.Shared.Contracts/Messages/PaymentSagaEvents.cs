@@ -32,5 +32,6 @@ public record PaymentCompletedMessage(
     Guid CardId,
     decimal Amount,
     Guid? CorrelationId,
+    string? Category = null,
     string? UserEmail = null);   // Optional — for sending email receipt
 

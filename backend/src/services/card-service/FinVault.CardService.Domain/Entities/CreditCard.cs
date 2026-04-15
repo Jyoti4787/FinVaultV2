@@ -1,4 +1,5 @@
 namespace FinVault.CardService.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 // WHAT IS THIS?
 // This is the main table — CreditCards
@@ -19,6 +20,14 @@ public class CreditCard
     // e.g. "**** **** **** 1234"
     // Full number never stored — PCI-DSS rule
     public string MaskedNumber { get; set; } = string.Empty;
+
+    // Encrypted full card number (for demo purposes)
+    // In production, use proper encryption service
+    public string? EncryptedCardNumber { get; set; }
+
+    // Encrypted CVV (for demo purposes)
+    // In production, use proper encryption service
+    public string? EncryptedCVV { get; set; }
 
     // Name printed on the card
     public string CardholderName { get; set; } = string.Empty;

@@ -1,39 +1,76 @@
-<div class="dashboard-header" *ngIf="!isLoading; else loader">
-  <div>
-    <h1>Welcome back, {{ userName }}</h1>
-    <p class="subtitle">Here is what's happening with your accounts today.</p>
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+  <div class="header-content" *ngIf="!isLoading; else loader">
+    <div>
+      <h1>Good {{ greeting }}, <span class="name-highlight">{{ userName }}</span> 👋</h1>
+      <p class="subtitle">Here's your financial overview for today.</p>
+    </div>
+    <div class="header-date">
+      <span class="material-icons-outlined">calendar_today</span>
+      {{ today | date:'EEEE, MMMM d' }}
+    </div>
+  </div>
+  <ng-template #loader>
+    <div class="header-content skeleton-header">
+      <div class="skeleton-line wide"></div>
+      <div class="skeleton-line narrow"></div>
+    </div>
+  </ng-template>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-row">
+  <div class="stat-chip glass-panel">
+    <div class="stat-icon-wrap accent">
+      <span class="material-icons-outlined">account_balance_wallet</span>
+    </div>
+    <div>
+      <div class="stat-label">Total Available Credit</div>
+      <div class="stat-val">₹{{ totalBalance | number:'1.0-0' }}</div>
+    </div>
+  </div>
+  <div class="stat-chip glass-panel">
+    <div class="stat-icon-wrap success">
+      <span class="material-icons-outlined">credit_card</span>
+    </div>
+    <div>
+      <div class="stat-label">Active Cards</div>
+      <div class="stat-val">{{ totalCards }}</div>
+    </div>
+  </div>
+  <div class="stat-chip glass-panel">
+    <div class="stat-icon-wrap warning">
+      <span class="material-icons-outlined">receipt_long</span>
+    </div>
+    <div>
+      <div class="stat-label">Recent Transactions</div>
+      <div class="stat-val">{{ recentTransactions.length }}</div>
+    </div>
+  </div>
+  <div class="stat-chip glass-panel">
+    <div class="stat-icon-wrap danger">
+      <span class="material-icons-outlined">trending_up</span>
+    </div>
+    <div>
+      <div class="stat-label">Total Outstanding</div>
+      <div class="stat-val">₹{{ totalOutstanding | number:'1.0-0' }}</div>
+    </div>
   </div>
 </div>
 
-<ng-template #loader>
-  <div class="dashboard-header" style="opacity: 0.5;">
-    <h1>Loading...</h1>
-    <p class="subtitle">Fetching your latest data securely.</p>
-  </div>
-</ng-template>
-
+<!-- Main Dashboard Grid -->
 <div class="dashboard-grid">
-  <!-- Balance Card -->
-  <div class="card balance-card">
-    <div class="card-title">Total Balance</div>
-    <div class="balance-amount">${{ totalBalance | number:'1.2-2' }}</div>
-    <div class="balance-meta"><span class="material-icons-outlined trend-up">trending_up</span> +3.2% from last month</div>
-    
-    <div class="quick-actions">
-      <button class="action-btn"><span class="material-icons-outlined">send</span> Send</button>
-      <button class="action-btn"><span class="material-icons-outlined">add_circle_outline</span> Deposit</button>
-      <button class="action-btn secondary"><span class="material-icons-outlined">more_horiz</span> More</button>
-    </div>
-  </div>
 
-  <!-- Chart Card -->
-  <div class="card chart-card">
-    <div class="card-header">
-      <div class="card-title">Spending History</div>
-      <select class="minimal-select">
-        <option>Last 6 months</option>
-        <option>This year</option>
-      </select>
+  <!-- Spending Chart -->
+  <div class="glass-panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Spending History</div>
+        <div class="panel-subtitle">Last 6 months of debit activity</div>
+      </div>
+      <div class="chart-legend">
+        <span class="legend-dot"></span> Debits
+      </div>
     </div>
     <div class="chart-container">
       <canvas baseChart
@@ -46,14 +83,64 @@
     </div>
   </div>
 
-  <!-- Transactions Card -->
-  <div class="card transactions-card">
-    <div class="card-header">
-      <div class="card-title">Recent Transactions</div>
-      <a routerLink="/transactions" class="view-all">View All</a>
+  <!-- Quick Actions Panel -->
+  <div class="glass-panel actions-panel">
+    <div class="panel-header">
+      <div class="panel-title">Quick Actions</div>
     </div>
-    
-    <div class="transactions-list">
+    <div class="quick-actions-grid">
+      <a routerLink="/payments" class="quick-action-btn">
+        <div class="qa-icon"><span class="material-icons-outlined">send</span></div>
+        <span>Send Money</span>
+      </a>
+      <a routerLink="/cards/add" class="quick-action-btn">
+        <div class="qa-icon"><span class="material-icons-outlined">add_card</span></div>
+        <span>Add Card</span>
+      </a>
+      <a routerLink="/transactions" class="quick-action-btn">
+        <div class="qa-icon"><span class="material-icons-outlined">receipt_long</span></div>
+        <span>Transactions</span>
+      </a>
+      <a routerLink="/rewards" class="quick-action-btn">
+        <div class="qa-icon"><span class="material-icons-outlined">stars</span></div>
+        <span>Rewards</span>
+      </a>
+    </div>
+
+    <!-- Primary Card Summary -->
+    <div class="primary-card-summary" *ngIf="primaryCard">
+      <div class="pcs-label">Primary Card</div>
+      <div class="pcs-number">{{ primaryCard.maskedNumber }}</div>
+      <div class="pcs-row">
+        <div>
+          <div class="pcs-sub">Limit</div>
+          <div class="pcs-val">₹{{ primaryCard.creditLimit | number:'1.0-0' }}</div>
+        </div>
+        <div>
+          <div class="pcs-sub">Available</div>
+          <div class="pcs-val success-text">₹{{ (primaryCard.creditLimit - primaryCard.outstandingBalance) | number:'1.0-0' }}</div>
+        </div>
+        <div>
+          <div class="pcs-sub">Network</div>
+          <div class="pcs-val">{{ primaryCard.network }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div class="glass-panel transactions-panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Recent Transactions</div>
+        <div class="panel-subtitle">Your latest activity</div>
+      </div>
+      <a routerLink="/transactions" class="view-all-link">
+        View All <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="transactions-list" *ngIf="recentTransactions.length > 0; else noTx">
       @for (tx of recentTransactions; track tx.id) {
         <div class="transaction-item">
           <div class="tx-icon" [class.credit]="tx.type === 'credit'">
@@ -63,26 +150,20 @@
           </div>
           <div class="tx-details">
             <div class="tx-merchant">{{ tx.description || tx.category }}</div>
-            <div class="tx-date">{{ tx.timestamp | date:'MMM dd' }}</div>
+            <div class="tx-date">{{ tx.timestamp | date:'MMM dd, yyyy' }}</div>
           </div>
           <div class="tx-amount" [class.credit]="tx.type === 'credit'">
-            {{ tx.type === 'credit' ? '+' : '-' }}${{ tx.amount | number:'1.2-2' }}
+            {{ tx.type === 'credit' ? '+' : '-' }}₹{{ tx.amount | number:'1.2-2' }}
           </div>
         </div>
       }
     </div>
+    <ng-template #noTx>
+      <div class="empty-state">
+        <span class="material-icons-outlined">receipt_long</span>
+        <p>No recent transactions</p>
+      </div>
+    </ng-template>
   </div>
-  
-  <!-- Mini Cards -->
-  <div class="card mini-card">
-    <div class="card-title">Active Cards</div>
-    <div class="mini-stat">{{ totalCards }}</div>
-    <a routerLink="/cards" class="view-all">Manage Cards</a>
-  </div>
-  
-  <div class="card mini-card">
-    <div class="card-title">Pending Payments</div>
-    <div class="mini-stat warning-text">1</div>
-    <a href="#" class="view-all">Review</a>
-  </div>
+
 </div>

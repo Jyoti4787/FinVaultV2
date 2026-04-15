@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, Payment, ProcessPaymentRequest } from '../interfaces/api.interfaces';
+import { ApiResponse, Payment, ProcessPaymentRequest, PayExternalBillRequest, VerifyExternalBillRequest } from '../interfaces/api.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +31,17 @@ export class PaymentService {
 
   getHistory(): Observable<Payment[]> {
     return this.http.get<ApiResponse<Payment[]>>(`${this.baseUrl}/history`).pipe(this.unwrap());
+  }
+
+  getExternalHistory(): Observable<any[]> {
+    return this.http.get<ApiResponse<any[]>>(`${environment.apiUrl}/external-bills/history`).pipe(this.unwrap());
+  }
+
+  payExternalBill(payload: PayExternalBillRequest): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${environment.apiUrl}/external-bills/pay`, payload).pipe(this.unwrap());
+  }
+
+  verifyExternalBill(billPaymentId: string, payload: VerifyExternalBillRequest): Observable<any> {
+    return this.http.put<ApiResponse<any>>(`${environment.apiUrl}/external-bills/${billPaymentId}/verify`, payload).pipe(this.unwrap());
   }
 }

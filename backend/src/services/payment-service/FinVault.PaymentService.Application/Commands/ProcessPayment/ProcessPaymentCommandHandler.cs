@@ -3,6 +3,7 @@
 // LAYER: Application (Commands)
 // ==================================================================
 
+using System.Net.Http.Json;
 using FinVault.PaymentService.Domain.Entities;
 using FinVault.PaymentService.Domain.Interfaces;
 using FinVault.Shared.Contracts.Messages;
@@ -39,6 +40,20 @@ public class ProcessPaymentCommandHandler
 
         if (!otpValid)
             throw new UnauthorizedAccessException("Invalid or expired Payment OTP.");
+
+        // ── STEP 0.5: CHECK AVAILABLE CREDIT ─────────────────────
+        // Call card service to check if user has enough available credit
+        var cardCheckResult = await CheckCardAvailableCredit(request.CardId, request.Amount, cancellationToken);
+        
+        if (!cardCheckResult.HasSufficientCredit)
+        {
+            return new ProcessPaymentResult(
+                Guid.Empty,
+                "Failed",
+                null,
+                $"Insufficient credit. Available: {cardCheckResult.AvailableCredit:C}, Required: {request.Amount:C}"
+            );
+        }
 
         // 1. Create payment record as "Pending"
         var payment = new Payment
@@ -89,6 +104,36 @@ public class ProcessPaymentCommandHandler
         );
     }
 
+    private async Task<(bool HasSufficientCredit, decimal AvailableCredit)> CheckCardAvailableCredit(
+        Guid cardId, decimal amount, CancellationToken cancellationToken)
+    {
+        // TODO: Call card service API to get card details
+        // For now, we'll use a simple HTTP call
+        using var httpClient = new HttpClient();
+        try
+        {
+            var response = await httpClient.GetAsync(
+                $"http://card-service:8080/api/cards/{cardId}", 
+                cancellationToken);
+            
+            if (!response.IsSuccessStatusCode)
+                return (false, 0);
+
+            var cardData = await response.Content.ReadFromJsonAsync<CardResponse>(cancellationToken);
+            if (cardData?.Data == null)
+                return (false, 0);
+
+            var availableCredit = cardData.Data.CreditLimit - cardData.Data.OutstandingBalance;
+            return (availableCredit >= amount, availableCredit);
+        }
+        catch
+        {
+            // If we can't check, allow the payment (fail-open for now)
+            // In production, you'd want to fail-closed
+            return (true, 0);
+        }
+    }
+
     private async Task<(bool, string, string)> SimulateBankProcess(decimal amount)
     {
         await Task.Delay(500);
@@ -96,3 +141,13 @@ public class ProcessPaymentCommandHandler
         return (success, "TXN_" + Guid.NewGuid().ToString("N")[..10].ToUpper(), "AUTH_" + new Random().Next(100000, 999999));
     }
 }
+
+// Helper classes for card service API response
+internal record CardResponse(bool Success, CardData? Data);
+internal record CardData(
+    Guid CardId,
+    string MaskedNumber,
+    decimal CreditLimit,
+    decimal OutstandingBalance,
+    decimal AvailableCredit
+);

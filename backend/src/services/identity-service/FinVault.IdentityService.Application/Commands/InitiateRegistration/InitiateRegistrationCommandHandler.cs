@@ -45,29 +45,6 @@ public class InitiateRegistrationCommandHandler
         if (existing is not null)
             throw new InvalidOperationException($"An account with email '{email}' already exists.");
 
-        // ── TEMPORARY: SKIP OTP - DIRECTLY CREATE USER ──────────────────
-        _logger.LogWarning(">>> DEVELOPMENT MODE: OTP DISABLED - Creating user directly <<<");
-        
-        var user = new User
-        {
-            Id              = Guid.NewGuid(),
-            Email           = email,
-            FirstName       = cmd.FirstName,
-            LastName        = cmd.LastName,
-            PasswordHash    = BCrypt.Net.BCrypt.HashPassword(cmd.Password),
-            IsEmailVerified = true,  // Skip email verification for now
-            IsActive        = true,
-            CreatedAt       = DateTimeOffset.UtcNow,
-            UpdatedAt       = DateTimeOffset.UtcNow
-        };
-
-        await _users.AddAsync(user, ct);
-        _logger.LogInformation("User created directly (OTP skipped): {UserId} ({Email})", user.Id, user.Email);
-
-        return new InitiateRegistrationResult(
-            $"Registration successful! User created with ID: {user.Id}");
-
-        /* ORIGINAL OTP CODE - COMMENTED OUT
         // ── 2. GENERATE 6-DIGIT OTP ─────────────────────────────────────
         var raw  = Random.Shared.Next(100_000, 999_999).ToString();
         var otpHash = BCrypt.Net.BCrypt.HashPassword(raw);
@@ -103,6 +80,5 @@ public class InitiateRegistrationCommandHandler
 
         return new InitiateRegistrationResult(
             "Registration initiated. A verification code has been sent to your email. Valid for 15 minutes.");
-        */
     }
 }

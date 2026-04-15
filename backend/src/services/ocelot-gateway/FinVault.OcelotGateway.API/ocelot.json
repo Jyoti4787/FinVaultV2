@@ -117,6 +117,30 @@
       "SwaggerKey": "payments"
     },
     {
+      "DownstreamPathTemplate": "/api/payment-rewards/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/payment-rewards/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
+      "DownstreamPathTemplate": "/api/payment-rewards",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/payment-rewards",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "payments"
+    },
+    {
       "DownstreamPathTemplate": "/api/billing/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [ { "Host": "payment-service", "Port": 8080 } ],

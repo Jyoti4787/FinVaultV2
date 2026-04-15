@@ -17,16 +17,22 @@ public class LoginUserCommandHandler
 {
     private readonly IUserRepository _users;
     private readonly IMediator       _mediator;
+    private readonly IRefreshTokenRepository _tokens;
+    private readonly IJwtTokenService _jwtService;
     private readonly ILogger<LoginUserCommandHandler> _logger;
 
     public LoginUserCommandHandler(
         IUserRepository users,
         IMediator mediator,
+        IRefreshTokenRepository tokens,
+        IJwtTokenService jwtService,
         ILogger<LoginUserCommandHandler> logger)
     {
-        _users    = users;
-        _mediator = mediator;
-        _logger   = logger;
+        _users      = users;
+        _mediator   = mediator;
+        _tokens     = tokens;
+        _jwtService = jwtService;
+        _logger     = logger;
     }
 
     public async Task<LoginUserResult> Handle(
@@ -51,18 +57,33 @@ public class LoginUserCommandHandler
             throw new UnauthorizedAccessException("Account is disabled.");
         }
 
-        // ── TEMPORARY: SKIP OTP - DIRECTLY RETURN JWT ───────────────────
-        _logger.LogWarning(">>> DEVELOPMENT MODE: OTP DISABLED - Returning JWT directly <<<");
-        
-        // Note: JWT generation will be added in the controller
-        return new LoginUserResult(
-            OtpRequired: false,
-            Message: "Login successful! OTP verification skipped in development mode.",
-            UserId: user.Id,
-            Email: user.Email,
-            Role: user.Role);
+        // ADMIN EXCEPTION — Admins bypass OTP
+        if (user.Role == "Admin")
+        {
+            _logger.LogInformation("Admin login bypassing OTP for {Email}", cmd.Email);
 
-        /* ORIGINAL OTP CODE - COMMENTED OUT
+            var accessToken  = _jwtService.GenerateAccessToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            await _tokens.AddAsync(new Domain.Entities.RefreshToken
+            {
+                Id        = Guid.NewGuid(),
+                UserId    = user.Id,
+                Token     = refreshToken,
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
+                CreatedAt = DateTimeOffset.UtcNow
+            }, ct);
+
+            return new LoginUserResult(
+                OtpRequired: false,
+                Message: "Login successful.",
+                AccessToken: accessToken,
+                RefreshToken: refreshToken,
+                UserId: user.Id,
+                Email: user.Email,
+                Role: user.Role);
+        }
+
         // 2 — Delegate OTP generation to SendOTPCommandHandler
         //     This is the SINGLE place that generates OTPs.
         //     It handles: rate limiting, invalidating old OTPs, hashing, saving, publishing.
@@ -77,6 +98,5 @@ public class LoginUserCommandHandler
         return new LoginUserResult(
             OtpRequired: true,
             Message: "OTP sent to your email. Enter it to complete login.");
-        */
     }
 }

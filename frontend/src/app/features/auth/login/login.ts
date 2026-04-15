@@ -40,20 +40,17 @@ export class Login implements OnInit {
     this.authService.login({ email: this.email, password: this.password, correlationId: '00000000-0000-0000-0000-000000000000' }).subscribe({
       next: (res) => {
         console.log('Login response:', res);
-        console.log('Access token:', res.accessToken);
-        
         this.isLoading = false;
         
-        if (res.requiresOtp) {
-          // If OTP required, you could store email in a service or LocalStorage and nav to verify-otp
+        if (res.otpRequired || res.requiresOtp) {
+          // OTP required — save email and navigate to OTP verification
           localStorage.setItem('pending_verification_email', this.email);
+          localStorage.setItem('pending_return_url', this.returnUrl);
           this.router.navigate(['/auth/verify-otp']);
         } else if (res.accessToken) {
+          // Direct login (shouldn't happen with OTP enabled, but kept as fallback)
           console.log('Saving token to localStorage...');
           this.tokenService.setTokens(res.accessToken, res.refreshToken);
-          
-          const savedToken = localStorage.getItem('finvault_jwt');
-          console.log('Token saved successfully:', !!savedToken);
           
           // Store user info
           localStorage.setItem('user_email', res.email);
@@ -65,8 +62,10 @@ export class Login implements OnInit {
           console.log('Navigating to:', destination, ' (role:', res.role, ')');
           this.router.navigateByUrl(destination);
         } else {
-          console.error('No accessToken in response:', res);
-          this.errorMessage = 'Login failed: No access token received';
+          // OTP flow: the backend returned a message but no token
+          localStorage.setItem('pending_verification_email', this.email);
+          localStorage.setItem('pending_return_url', this.returnUrl);
+          this.router.navigate(['/auth/verify-otp']);
         }
       },
       error: (err) => {

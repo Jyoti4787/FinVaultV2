@@ -16,6 +16,8 @@ export interface User {
 export interface Card {
   cardId: string;
   maskedNumber: string;
+  fullNumber?: string; // Revealed full card number
+  cvv?: string; // Revealed CVV
   cardNumberMasked?: string; // Alias for maskedNumber
   cardholderName: string;
   issuerName: string;
@@ -53,6 +55,7 @@ export interface AuthResponse {
   role: string;
   accessToken: string;
   refreshToken: string;
+  otpRequired?: boolean;
   requiresOtp?: boolean;
 }
 
@@ -124,7 +127,7 @@ export interface ProcessPaymentRequest {
 
 export interface RedeemRewardRequest {
   points: number;
-  reason: string;
+  cardId: string;
   amount?: number;
 }
 
@@ -136,4 +139,15 @@ export interface RewardSummary {
 export interface CreateTicketRequest {
   subject: string;
   message: string;
+}
+
+export interface PayExternalBillRequest {
+  billType: string;
+  amount: number;
+  accountNumber: string;
+  cardId: string;
+}
+
+export interface VerifyExternalBillRequest {
+  otpCode: string;
 }

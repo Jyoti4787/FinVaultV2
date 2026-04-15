@@ -46,6 +46,7 @@ public class GetUserProfileQueryHandler
             user.Email,
             user.FirstName,
             user.LastName,
+            user.PhoneNumber,
             user.Role,
             user.IsEmailVerified,
             user.CreatedAt);

@@ -18,7 +18,11 @@ public class GetAllCardsAdminQueryHandler : IRequestHandler<GetAllCardsAdminQuer
         var allCards = await _cards.GetAllAsync(ct);
 
         return allCards.Select(c => {
-            var dueDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, c.BillingCycleStartDay).AddDays(20);
+            var now = DateTime.UtcNow;
+            var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+            var safeStartDay = Math.Clamp(c.BillingCycleStartDay, 1, daysInMonth);
+            var billingDate = new DateTime(now.Year, now.Month, safeStartDay);
+            var dueDate = billingDate.AddDays(20);
             return new CardSummary(
                 c.Id,
                 c.MaskedNumber,

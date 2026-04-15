@@ -3,7 +3,7 @@
 # FinVault Full Stack Startup Script
 # This script starts both backend and frontend services
 
-echo "🚀 Starting FinVault Full Stack..."
+echo " Starting FinVault Full Stack..."
 echo ""
 
 # Colors for output
@@ -13,7 +13,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Step 1: Start Backend Services
-echo -e "${BLUE}📦 Starting Backend Services...${NC}"
+echo -e "${BLUE} Starting Backend Services...${NC}"
 cd backend
 docker-compose up -d
 
@@ -35,14 +35,14 @@ if docker ps | grep -q "finvault-gateway"; then
     echo "  - RabbitMQ:       http://localhost:15672"
     echo ""
 else
-    echo -e "${YELLOW}⚠️  Backend services may not be fully started yet${NC}"
+    echo -e "${YELLOW}  Backend services may not be fully started yet${NC}"
     echo "Run 'docker ps' to check status"
     echo ""
 fi
 
 # Step 2: Start Frontend
 cd ../frontend
-echo -e "${BLUE}🎨 Starting Frontend...${NC}"
+echo -e "${BLUE} Starting Frontend...${NC}"
 echo ""
 echo -e "${GREEN}Frontend will be available at: http://localhost:4200${NC}"
 echo ""
@@ -54,4 +54,4 @@ echo -e "${BLUE}Starting Angular dev server...${NC}"
 echo ""
 
 # Start frontend (this will block)
-npm start
+ng serve 

@@ -60,6 +60,7 @@ public class ExceptionMiddleware
             // HTTP 401 = Unauthorized
             await WriteResponse(context, 401, ex.Message);
         }
+        
         catch (KeyNotFoundException ex)
         {
             // User not found, OTP not found etc

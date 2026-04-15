@@ -1,3 +1,4 @@
+using FinVault.CardService.Application.Helpers;
 using FinVault.CardService.Domain.Entities;
 using FinVault.CardService.Domain.Events;
 using FinVault.CardService.Domain.Interfaces;
@@ -57,6 +58,8 @@ public class AddCardCommandHandler
             Id                  = Guid.NewGuid(),
             UserId              = cmd.UserId,
             MaskedNumber        = masked,
+            EncryptedCardNumber = SimpleEncryption.Encrypt(cmd.CardNumber),
+            EncryptedCVV        = SimpleEncryption.Encrypt(cmd.Cvv),
             CardholderName      = cmd.CardholderName,
             ExpiryMonth         = cmd.ExpiryMonth,
             ExpiryYear          = cmd.ExpiryYear,

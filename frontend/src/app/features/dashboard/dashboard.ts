@@ -6,7 +6,8 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CardService } from '../../core/services/card';
 import { TransactionService } from '../../core/services/transaction';
-import { Card, Transaction, User } from '../../core/interfaces/api.interfaces';
+import { PaymentService } from '../../core/services/payment';
+import { Card, Transaction, Payment, User } from '../../core/interfaces/api.interfaces';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { UserService } from '../../core/services/user';
@@ -22,12 +23,23 @@ import { UserService } from '../../core/services/user';
 export class Dashboard implements OnInit {
   private cardService = inject(CardService);
   private txService = inject(TransactionService);
+  private paymentService = inject(PaymentService);
   private userService = inject(UserService);
   private cdr = inject(ChangeDetectorRef);
 
   public userName = ''; 
   public totalBalance = 0;
+  public totalOutstanding = 0;
   public totalCards = 0;
+  public primaryCard: Card | null = null;
+  public today = new Date();
+  
+  public get greeting(): string {
+    const h = new Date().getHours();
+    if (h < 12) return 'morning';
+    if (h < 17) return 'afternoon';
+    return 'evening';
+  }
   
   public recentTransactions: Transaction[] = [];
   public isLoading = true;
@@ -76,8 +88,11 @@ export class Dashboard implements OnInit {
     const transactions$ = this.txService.getTransactions().pipe(
       catchError(() => of([] as Transaction[]))
     );
+    const payments$ = this.paymentService.getHistory().pipe(
+      catchError(() => of([] as Payment[]))
+    );
 
-    forkJoin({ profile: profile$, cards: cards$, transactions: transactions$ }).subscribe({
+    forkJoin({ profile: profile$, cards: cards$, transactions: transactions$, payments: payments$ }).subscribe({
       next: (data) => {
         if (data.profile) {
           this.userName = data.profile.firstName || 'User';
@@ -90,7 +105,12 @@ export class Dashboard implements OnInit {
         this.totalBalance = cards.reduce(
           (sum: number, card: Card) => sum + (card.creditLimit - card.outstandingBalance), 0
         );
+        this.totalOutstanding = cards.reduce(
+          (sum: number, card: Card) => sum + card.outstandingBalance, 0
+        );
+        this.primaryCard = cards.find((c: Card) => c.isDefault) || cards[0] || null;
         
+        // Build chart data from BOTH transactions AND payment history
         const now = new Date();
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const labels: string[] = [];
@@ -100,21 +120,32 @@ export class Dashboard implements OnInit {
           const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
           labels.push(monthNames[d.getMonth()]);
         }
-        
-        this.barChartData = { ...this.barChartData, labels };
 
+        // Use transactions (any spend type)
         (data.transactions || []).forEach(tx => {
-          const txDate = new Date(tx.timestamp); 
+          const txDate = new Date(tx.timestamp);
           const diffMonths = (now.getFullYear() - txDate.getFullYear()) * 12 + now.getMonth() - txDate.getMonth();
           if (diffMonths >= 0 && diffMonths < 6) {
-             if (tx.type?.toLowerCase() === 'debit') {
-                monthData[5 - diffMonths] += tx.amount;
-             }
+            // Include all transaction types except pure credits
+            const type = (tx.type || '').toLowerCase();
+            if (type !== 'credit' && type !== 'refund') {
+              monthData[5 - diffMonths] += tx.amount;
+            }
+          }
+        });
+
+        // Also add payment history amounts
+        (data.payments || []).forEach((p: Payment) => {
+          const pDate = new Date(p.createdAt);
+          const diffMonths = (now.getFullYear() - pDate.getFullYear()) * 12 + now.getMonth() - pDate.getMonth();
+          if (diffMonths >= 0 && diffMonths < 6 && p.status?.toLowerCase() === 'completed') {
+            monthData[5 - diffMonths] += p.amount;
           }
         });
         
         this.barChartData = {
           ...this.barChartData,
+          labels,
           datasets: [{ ...this.barChartData.datasets[0], data: monthData }]
         };
         

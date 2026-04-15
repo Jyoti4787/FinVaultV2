@@ -16,9 +16,7 @@ using System.Text.Json.Nodes;
 // Instead of you calling 5 different ports, you just call PORT 5000.
 // Ocelot then "Redirects" your call to the right service!
 //
-// Also validates the JWT token here so broken tokens never reach
-// the microservices.
-// ==================================================================
+// Also validates the JWT token here so broken tokens never reach the microservices.
 
 
 

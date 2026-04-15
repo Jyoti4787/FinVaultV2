@@ -15,8 +15,6 @@ public record LoginUserCommand(
     Guid   CorrelationId
 ) : IRequest<LoginUserResult>;
 
-// Step 1 login just says "OTP sent" — no token yet
-// TEMPORARY: Added optional fields for direct JWT login (OTP disabled)
 public record LoginUserResult(
     // true when OTP has been sent to user's email
     // frontend should then show the OTP input screen
@@ -25,7 +23,9 @@ public record LoginUserResult(
     // Message to show the user
     string Message,
     
-    // TEMPORARY: For direct login without OTP
+    // Optional properties used for direct login (e.g., Admin)
+    string? AccessToken = null,
+    string? RefreshToken = null,
     Guid? UserId = null,
     string? Email = null,
     string? Role = null

@@ -93,44 +93,6 @@ public class AuthController : ControllerBase
         CancellationToken ct)
     {
         var result = await _mediator.Send(command, ct);
-        
-        // TEMPORARY: If OTP is disabled, generate JWT directly
-        if (!result.OtpRequired && result.UserId.HasValue)
-        {
-            var jwtService = HttpContext.RequestServices.GetRequiredService<IJwtTokenService>();
-            var userRepo = HttpContext.RequestServices.GetRequiredService<IUserRepository>();
-            
-            var user = await userRepo.GetByIdAsync(result.UserId.Value, ct);
-            if (user != null)
-            {
-                var accessToken = jwtService.GenerateAccessToken(user);
-                var refreshToken = jwtService.GenerateRefreshToken();
-                
-                // Save refresh token
-                var refreshTokenRepo = HttpContext.RequestServices.GetRequiredService<IRefreshTokenRepository>();
-                await refreshTokenRepo.AddAsync(new RefreshToken
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = user.Id,
-                    Token = refreshToken,
-                    ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
-                    CreatedAt = DateTimeOffset.UtcNow
-                }, ct);
-                
-                return Ok(new { 
-                    success = true, 
-                    data = new {
-                        message = result.Message,
-                        userId = user.Id,
-                        email = user.Email,
-                        role = user.Role,
-                        accessToken = accessToken,
-                        refreshToken = refreshToken
-                    }
-                });
-            }
-        }
-        
         return Ok(new { success = true, data = result });
     }
 

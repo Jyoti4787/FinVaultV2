@@ -33,6 +33,7 @@ public record GetUserProfileResult(
     string Email,
     string FirstName,
     string LastName,
+    string? PhoneNumber,
 
     // Role = User / Admin / SupportAgent
     // Frontend uses this to show/hide features

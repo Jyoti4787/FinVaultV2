@@ -16,6 +16,11 @@
         {{ errorMessage }}
       </div>
 
+      <div *ngIf="resendMessage" class="success-banner">
+        <span class="material-icons-outlined">check_circle</span>
+        {{ resendMessage }}
+      </div>
+
       <div class="form-group text-left" *ngIf="!email">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="Enter your email" required />
@@ -33,7 +38,10 @@
     </form>
     
     <div class="auth-footer">
-      Didn't receive a code? <a href="#">Resend Code</a>
+      Didn't receive a code? 
+      <a href="javascript:void(0)" (click)="resendOtp()" [class.disabled]="isResending">
+        {{ isResending ? 'Sending...' : 'Resend Code' }}
+      </a>
     </div>
   </div>
 </div>

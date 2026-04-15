@@ -14,46 +14,63 @@
 
 <div class="payments-container">
   
-  <div class="send-panel glass-panel">
+    <div class="send-panel glass-panel">
     <h3>Send Money</h3>
     
-    <ng-container *ngIf="!pendingTransactionId; else otpTemplate">
+      <!-- Category Selector -->
+      <div class="category-selector-wrapper">
+        <label class="section-label">Select Category</label>
+        <div class="category-grid">
+          <div 
+            class="category-card" 
+            *ngFor="let cat of categories" 
+            [class.active]="selectedCategory.id === cat.id"
+            (click)="selectCategory(cat)">
+            <div class="icon-circle">
+              <span class="material-icons-outlined">{{ cat.icon }}</span>
+            </div>
+            <span class="category-name">{{ cat.name }}</span>
+          </div>
+        </div>
+      </div>
+
       <form class="payment-form" (ngSubmit)="initiatePayment()">
-        <div class="form-group">
-          <label>Recipient Email or ID</label>
-          <input type="text" [(ngModel)]="paymentForm.recipientIdentifier" name="recipient" required />
+        
+        <div class="form-group" style="margin-top: 1.5rem;">
+          <label>{{ selectedCategory.label }} <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="paymentForm.recipientIdentifier" name="recipient" [placeholder]="selectedCategory.placeholder" required />
         </div>
         
         <div class="form-group">
-          <label>Amount</label>
+          <label>Pay From (Funding Source) <span class="required">*</span></label>
+          <select [(ngModel)]="paymentForm.sourceCardId" name="sourceCard" class="custom-select" required>
+            <option value="" disabled>Select a card</option>
+            <option *ngFor="let c of availableCards" [value]="c.cardId || c.id">
+              {{ c?.network || 'Card' }} ending in {{ (c?.maskedNumber || c?.cardNumberMasked)?.slice(-4) || 'XXXX' }}
+              <ng-container *ngIf="isCreditCard(c)">(Credit)</ng-container>
+              <ng-container *ngIf="!isCreditCard(c)">(Debit)</ng-container>
+            </option>
+          </select>
+          <p class="field-hint" *ngIf="selectedCategory.id === 'Credit Card Repayment'">
+            <span class="material-icons-outlined info-icon">info</span>
+            Credit card repayments are typically funded using a Debit Card, UPI, or Net Banking (like CRED).
+          </p>
+        </div>
+        
+        <div class="form-group">
+          <label>Amount (₹) <span class="required">*</span></label>
           <div class="amount-input-wrapper">
-            <span>$</span>
-            <input type="number" [(ngModel)]="paymentForm.amount" name="amount" required />
+            <span>₹</span>
+            <input type="number" [(ngModel)]="paymentForm.amount" name="amount" min="1" required />
           </div>
         </div>
 
         <button type="submit" class="primary-btn w-full mt-4" [disabled]="isInitiating">
-          {{ isInitiating ? 'Preparing...' : 'Initiate Transfer' }}
+          <span *ngIf="!isInitiating" class="material-icons-outlined">send</span>
+          <span *ngIf="isInitiating" class="material-icons-outlined spin">refresh</span>
+          {{ isInitiating ? 'Processing...' : 'Pay Now' }}
         </button>
       </form>
-    </ng-container>
-
-    <ng-template #otpTemplate>
-      <div class="otp-verification">
-        <p class="text-sm">Please check your email for the 6-digit OTP code to authorize this <strong>${{ paymentForm.amount }}</strong> transfer.</p>
-        
-        <form (ngSubmit)="confirmPayment()">
-          <div class="form-group">
-            <label>Secure OTP</label>
-            <input type="text" [(ngModel)]="otpCode" name="otp" placeholder="123456" maxlength="6" required class="otp-input" />
-          </div>
-          <button type="submit" class="primary-btn w-full mt-4" [disabled]="isProcessing">
-            {{ isProcessing ? 'Verifying...' : 'Confirm Transfer' }}
-          </button>
-          <button type="button" class="secondary-btn w-full mt-2" (click)="pendingTransactionId = ''">Cancel</button>
-        </form>
-      </div>
-    </ng-template>
   </div>
 
   <div class="history-panel glass-panel">
@@ -67,17 +84,21 @@
       <thead>
         <tr>
           <th>Date</th>
-          <th>Recipient</th>
+          <th>Category</th>
+          <th>Recipient / Account</th>
           <th>Amount</th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let p of payments">
-          <td>{{ p.date | date:'shortDate' }}</td>
-          <td>{{ p.recipientEmail || p.recipientId }}</td>
-          <td class="amount font-medium">-${{ p.amount | number:'1.2-2' }}</td>
-          <td><span class="status-badge" [class.success]="p.status === 'Completed'">{{ p.status }}</span></td>
+          <td>{{ p.transactionDate || p.date || p.createdAt | date:'dd MMM yyyy' }}</td>
+          <td>
+            <span class="type-badge">{{ p.billType || p.category || 'Transfer' }}</span>
+          </td>
+          <td class="recipient-col">{{ p.accountNumber || p.recipientEmail || p.recipientId || '—' }}</td>
+          <td class="amount font-medium">-₹{{ (p.amount || 0) | number:'1.2-2' }}</td>
+          <td><span class="status-badge" [class.success]="p.status === 'Success' || p.status === 'Completed'">{{ p.status }}</span></td>
         </tr>
       </tbody>
     </table>
@@ -85,6 +106,40 @@
     <div class="empty-state" *ngIf="!isLoading && payments.length === 0">
       <span class="material-icons-outlined">receipt_long</span>
       <p>No payment history found.</p>
+    </div>
+  </div>
+</div>
+
+<!-- OTP Verification Modal -->
+<div class="modal-overlay" *ngIf="pendingTransactionId">
+  <div class="modal-content glass-panel" style="max-width: 400px; padding: 32px;">
+    <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <h3 style="margin: 0;">Security Verification</h3>
+      <button class="icon-btn" (click)="cancelPayment()" style="background: none; border: none; cursor: pointer; color: var(--text-secondary);">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.5; font-size: 15px;">
+        Please enter the 6-digit OTP sent to your registered email to authorize this payment of <strong>₹{{ paymentForm.amount }}</strong>.
+      </p>
+      
+      <div class="form-group" style="margin-bottom: 24px;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-secondary);">Enter OTP Code</label>
+        <input 
+          type="text" 
+          [(ngModel)]="otpCode" 
+          maxlength="6" 
+          placeholder="••••••" 
+          style="width: 100%; text-align: center; font-size: 24px; letter-spacing: 8px; padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; background: rgba(0,0,0,0.2); color: white; outline: none;" 
+        />
+      </div>
+
+      <button class="primary-btn w-full" (click)="verifyPayment()" [disabled]="isProcessing" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span *ngIf="!isProcessing" class="material-icons-outlined" style="font-size: 20px;">lock_open</span>
+        <span *ngIf="isProcessing" class="material-icons-outlined spin" style="font-size: 20px;">refresh</span>
+        {{ isProcessing ? 'Verifying...' : 'Verify & Pay' }}
+      </button>
     </div>
   </div>
 </div>

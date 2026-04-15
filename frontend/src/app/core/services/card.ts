@@ -11,6 +11,7 @@ import { ApiResponse, Card, CardUtilization, AddCardRequest } from '../interface
 export class CardService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/cards`;
+  private identityUrl = `${environment.apiUrl}/identity/auth`;
 
   private unwrap<T>() {
     return map((res: ApiResponse<T> | any) => {
@@ -52,6 +53,22 @@ export class CardService {
   updateLimit(cardId: string, newLimit: number | { newLimit: number }): Observable<any> {
     const payload = typeof newLimit === 'number' ? { newLimit } : newLimit;
     return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/${cardId}/limit`, payload).pipe(this.unwrap());
+  }
+
+  /** Send OTP for card reveal via identity-service MFA endpoint */
+  sendRevealOtp(email: string): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.identityUrl}/mfa/send`, {
+      email,
+      purpose: 'CardReveal',
+      correlationId: '00000000-0000-0000-0000-000000000000'
+    }).pipe(this.unwrap());
+  }
+
+  /** Reveal card details with OTP verification (POST) */
+  revealCard(cardId: string, otpCode: string): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/${cardId}/reveal`, {
+      otpCode
+    }).pipe(this.unwrap());
   }
 
   getAdminCards(): Observable<Card[]> {

@@ -22,26 +22,26 @@
     <span class="material-icons-outlined spin">refresh</span> Loading transactions...
   </div>
 
-  <table class="data-table" *ngIf="!isLoading && transactions.length > 0">
+    <table class="data-table" *ngIf="!isLoading && transactions.length > 0">
     <thead>
       <tr>
         <th>Date</th>
         <th>Description</th>
-        <th>Type</th>
+        <th>Category</th>
         <th>Status</th>
         <th class="text-right">Amount</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let tx of transactions">
-        <td>{{ tx.timestamp | date:'MMM dd, yyyy' }}</td>
-        <td class="font-medium">{{ tx.description || tx.category }}</td>
+        <td>{{ tx.timestamp | date:'dd MMM yyyy' }}</td>
+        <td class="font-medium">{{ tx.description || tx.category || 'Payment' }}</td>
         <td>
-          <span class="type-badge" [class.credit]="tx.type === 'credit'">{{ tx.type }}</span>
+          <span class="type-badge">{{ tx.category || tx.type }}</span>
         </td>
-        <td>Completed</td>
-        <td class="text-right amount font-medium" [class.credit]="tx.type === 'credit'">
-          {{ tx.type === 'credit' ? '+' : '-' }}${{ tx.amount | number:'1.2-2' }}
+        <td><span class="status-badge success">{{ tx.status || 'Completed' }}</span></td>
+        <td class="text-right amount font-medium" [class.text-success]="tx.type === 'credit'">
+          {{ tx.type === 'credit' ? '+' : '-' }}₹{{ tx.amount | number:'1.2-2' }}
         </td>
       </tr>
     </tbody>

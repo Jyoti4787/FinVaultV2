@@ -37,7 +37,8 @@ try
     //  1. DATABASE 
     builder.Services.AddDbContext<IdentityDbContext>(options =>
         options.UseSqlServer(
-            builder.Configuration.GetConnectionString("IdentityDb")));
+            builder.Configuration.GetConnectionString("IdentityDb"))
+        .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
     //  2. REPOSITORIES 
     builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -163,6 +164,9 @@ try
     {
         var db = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
         db.Database.Migrate();
+        
+        // Seed Admin User
+        await IdentityDataSeeder.SeedAdminAsync(app.Services);
     }
 
     //  9. MIDDLEWARE PIPELINE
